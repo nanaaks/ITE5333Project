@@ -85,7 +85,7 @@ fun SignInScreen (
 
             Button(onClick = {
                 // Update user object in UserViewModel with login credentials
-                userViewModel.updateUser(email, password)
+                userViewModel.updateLogin(email, password)
 
                 //Navigate to HomeScreen if credentials valid
                 navController.navigate(Route.Home.routeName) {
