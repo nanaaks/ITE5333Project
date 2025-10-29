@@ -123,7 +123,7 @@ fun HomeScreen (
             Button(
                 onClick = {
                     //Navigate to RideScreen
-                    //navController.navigate(Route.Ride.routeName)
+                    navController.navigate(Route.Ride.routeName)
                 },
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(

@@ -8,6 +8,7 @@ import com.project.app.viewmodel.UserViewModel
 import com.project.app.view.SignInScreen
 import com.project.app.view.HomeScreen
 import com.project.app.view.DriveScreen
+import com.project.app.view.ResultScreen
 import com.project.app.view.RideScreen
 
 @Composable
@@ -29,6 +30,12 @@ fun NavGraph (
 
         composable(Route.Drive.routeName) {
             DriveScreen(navController)
+        }
+        composable(Route.Ride.routeName) {
+            RideScreen(navController)
+        }
+        composable(Route.Result.routeName) {
+            ResultScreen(navController)
         }
     }
 }
