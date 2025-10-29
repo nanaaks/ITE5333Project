@@ -147,7 +147,7 @@ fun HomeScreen (
             Button(
                 onClick = {
                     //Navigate to DriveScreen
-                    //navController.navigate(Route.Drive.routeName)
+                    navController.navigate(Route.Drive.routeName)
                 },
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(
