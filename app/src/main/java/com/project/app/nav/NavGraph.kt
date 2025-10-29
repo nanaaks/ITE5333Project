@@ -26,5 +26,9 @@ fun NavGraph (
         composable(Route.Home.routeName) {
             HomeScreen(navController, userViewModel)
         }
+
+        composable(Route.Drive.routeName) {
+            DriveScreen(navController)
+        }
     }
 }
