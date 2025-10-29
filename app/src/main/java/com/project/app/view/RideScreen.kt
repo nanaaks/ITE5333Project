@@ -1,6 +1,7 @@
 package com.project.app.view
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -47,22 +48,26 @@ import com.project.app.viewmodel.RideViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RideScreen(navController: NavController, rideViewModel: RideViewModel = viewModel()) {
-
-    var newAddress by remember { mutableStateOf("") }
+fun RideScreen(
+    navController: NavController,
+    rideViewModel: RideViewModel = viewModel()
+) {
     var showAddAddressDialog by remember { mutableStateOf(false) }
+    var street by remember { mutableStateOf("") }
+    var city by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Book a Ride") },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.DarkGray,
+                    containerColor = Color(0xFF1E1E1E),
                     titleContentColor = Color.White
                 )
             )
         }
     ) { innerPadding ->
+
         LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
@@ -70,68 +75,58 @@ fun RideScreen(navController: NavController, rideViewModel: RideViewModel = view
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-//            Saved Addresses
+            /** PICKUP ADDRESS **/
             item {
-                Text("Saved Addresses", fontWeight = FontWeight.Bold)
-                rideViewModel.savedAddresses.forEach { address ->
-                    OutlinedButton(
-                        onClick = { rideViewModel.pickupAddress.value = address },
-                        modifier = Modifier.fillMaxWidth()
-                    ) { Text(address) }
-                }
+                Text("Pickup Address", fontWeight = FontWeight.Bold)
 
-                TextButton(onClick = { showAddAddressDialog = true }) {
-                    Icon(Icons.Default.Add, contentDescription = null)
-                    Spacer(Modifier.width(8.dp))
+                AddressDropdown(
+                    label = "Select Pickup",
+                    selectedAddress = rideViewModel.pickup.value,
+                    addresses = rideViewModel.allAddresses.value,
+                    onAddressSelected = { rideViewModel.pickup.value = it }
+                )
+
+                TextButton(
+                    onClick = { showAddAddressDialog = true },
+                    modifier = Modifier.padding(top = 4.dp)
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Add Address")
+                    Spacer(Modifier.width(6.dp))
                     Text("Add New Address")
                 }
             }
 
-//            Address Inputs
+            /** DESTINATION ADDRESS **/
             item {
-                OutlinedTextField(
-                    value = rideViewModel.pickupAddress.value,
-                    onValueChange = { rideViewModel.pickupAddress.value = it },
-                    label = { Text("Pickup Location") },
-                    leadingIcon = { Icon(Icons.Default.LocationOn, null) },
-                    modifier = Modifier.fillMaxWidth()
+                Text("Destination Address", fontWeight = FontWeight.Bold)
+
+                AddressDropdown(
+                    label = "Select Destination",
+                    selectedAddress = rideViewModel.destination.value,
+                    addresses = rideViewModel.allAddresses.value,
+                    onAddressSelected = { rideViewModel.destination.value = it }
                 )
-                Spacer(Modifier.height(8.dp))
-                OutlinedTextField(
-                    value = rideViewModel.destinationAddress.value,
-                    onValueChange = { rideViewModel.destinationAddress.value = it },
-                    label = { Text("Destination") },
-                    leadingIcon = { Icon(Icons.Default.Place, null) },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(Modifier.height(8.dp))
-                IconButton(onClick = {
-                    val temp = rideViewModel.pickupAddress.value
-                    rideViewModel.pickupAddress.value = rideViewModel.destinationAddress.value
-                    rideViewModel.destinationAddress.value = temp
-                }) {
-                    Icon(Icons.Default.SwapVert, "Swap Addresses")
-                }
             }
 
-//            Ride Options
+            /** RIDE OPTIONS **/
             item {
                 Text("Ride Options", fontWeight = FontWeight.Bold)
+
                 rideViewModel.rideOptions.forEach { option ->
                     val selected = rideViewModel.selectedRide.value == option
                     OutlinedButton(
                         onClick = { rideViewModel.selectedRide.value = option },
                         modifier = Modifier.fillMaxWidth(),
                         colors = ButtonDefaults.outlinedButtonColors(
-                            containerColor = if (selected) Color.LightGray else Color.Transparent
+                            containerColor = if (selected) Color(0xFFBBDEFB) else Color.Transparent
                         )
                     ) {
-                        Text("${option.name} - Base \$${option.baseFare}")
+                        Text("${option.name} - Base $${option.baseFare}")
                     }
                 }
             }
 
-//             Promo & Payment
+            /** PROMO & PAYMENT **/
             item {
                 OutlinedTextField(
                     value = rideViewModel.promoCode.value,
@@ -152,10 +147,16 @@ fun RideScreen(navController: NavController, rideViewModel: RideViewModel = view
                         onValueChange = {},
                         readOnly = true,
                         label = { Text("Payment Method") },
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                        },
                         modifier = Modifier.menuAnchor().fillMaxWidth()
                     )
-                    ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
                         listOf("Cash", "Card", "Wallet").forEach { method ->
                             DropdownMenuItem(
                                 text = { Text(method) },
@@ -169,69 +170,125 @@ fun RideScreen(navController: NavController, rideViewModel: RideViewModel = view
                 }
             }
 
-//            Fare Calculation
+            /** CALCULATE FARE **/
             item {
                 Button(
-                    onClick = {
-                        rideViewModel.calculateFare()
-                    },
+                    onClick = { rideViewModel.calculateFare() },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
-                ) { Text("Calculate Fare", color = Color.White) }
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E1E1E))
+                ) {
+                    Text("Calculate Fare", color = Color.White)
+                }
 
                 if (rideViewModel.fare.value > 0) {
                     Text(
-                        text = "Fare: \$${"%.2f".format(rideViewModel.fare.value)}  |  ETA: ${rideViewModel.estimatedTime.value}",
+                        text = "Fare: $${"%.2f".format(rideViewModel.fare.value)} | ETA: ${rideViewModel.eta.value}",
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF2E7D32)
+                        color = Color(0xFF2E7D32),
+                        modifier = Modifier.padding(top = 4.dp)
                     )
+
                     if (rideViewModel.discountApplied.value)
                         Text("Promo Applied!", color = Color.Blue)
                 }
             }
 
-//            Book Ride
+            /** BOOK BUTTON **/
             item {
                 Button(
                     onClick = {
-                        if (rideViewModel.pickupAddress.value.isBlank() ||
-                            rideViewModel.destinationAddress.value.isBlank()
-                        ) return@Button
-
-                        navController.navigate(Route.Result.routeName)
+                        if (rideViewModel.pickup.value != null && rideViewModel.destination.value != null) {
+                            navController.navigate(Route.Result.routeName)
+                        }
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D32))
-                ) { Text("Book Ride", color = Color.White) }
+                ) {
+                    Text("Book Ride", color = Color.White)
+                }
             }
         }
     }
 
-//    Add Address Dialog
+    /** ADD NEW ADDRESS DIALOG **/
     if (showAddAddressDialog) {
         AlertDialog(
             onDismissRequest = { showAddAddressDialog = false },
+            title = { Text("Add New Address") },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedTextField(
+                        value = street,
+                        onValueChange = { street = it },
+                        label = { Text("Street Name") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                    )
+                    OutlinedTextField(
+                        value = city,
+                        onValueChange = { city = it },
+                        label = { Text("City") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                    )
+                }
+            },
             confirmButton = {
                 TextButton(onClick = {
-                    val added = rideViewModel.addSavedAddress(newAddress)
-                    if (added) {
-                        newAddress = ""
+                    if (street.isNotBlank() && city.isNotBlank()) {
+                        rideViewModel.addAddress(street, city)
+                        street = ""
+                        city = ""
                         showAddAddressDialog = false
                     }
                 }) { Text("Add") }
             },
             dismissButton = {
                 TextButton(onClick = { showAddAddressDialog = false }) { Text("Cancel") }
-            },
-            title = { Text("Add New Address") },
-            text = {
-                OutlinedTextField(
-                    value = newAddress,
-                    onValueChange = { newAddress = it },
-                    label = { Text("Address") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
-                )
             }
         )
     }
 }
+
+///** ADDRESS DROPDOWN COMPONENT **/
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddressDropdown(
+    label: String,
+    selectedAddress: com.project.app.data.Address?,
+    addresses: List<com.project.app.data.Address>,
+    onAddressSelected: (com.project.app.data.Address) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded }
+    ) {
+        OutlinedTextField(
+            value = selectedAddress?.let { "${it.street}, ${it.city}" } ?: "",
+            onValueChange = {},
+            readOnly = true,
+            label = { Text(label) },
+            leadingIcon = {
+                Icon(
+                    imageVector = if (label.contains("Pickup")) Icons.Default.LocationOn else Icons.Default.Place,
+                    contentDescription = null
+                )
+            },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            modifier = Modifier.menuAnchor().fillMaxWidth()
+        )
+
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            addresses.forEach { address ->
+                DropdownMenuItem(
+                    text = { Text("${address.street}, ${address.city}") },
+                    onClick = {
+                        onAddressSelected(address)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
+

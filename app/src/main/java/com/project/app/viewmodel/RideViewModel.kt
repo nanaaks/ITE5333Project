@@ -2,20 +2,27 @@ package com.project.app.viewmodel
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.project.app.data.Address
+import com.project.app.data.dummyAddresses
 import com.project.app.model.RideOption
 import kotlin.random.Random
 
-
 class RideViewModel : ViewModel() {
 
-    val pickupAddress = mutableStateOf("")
-    val destinationAddress = mutableStateOf("")
+//    Address Management
+    val allAddresses = mutableStateOf(dummyAddresses.toMutableList())
+    val pickup = mutableStateOf<Address?>(null)
+    val destination = mutableStateOf<Address?>(null)
+
+//    Ride Details
     val selectedRide = mutableStateOf<RideOption?>(null)
     val fare = mutableStateOf(0.0)
+    val eta = mutableStateOf("")
+    val paymentMethod = mutableStateOf("Cash")
+
+//    Promo System
     val promoCode = mutableStateOf("")
     val discountApplied = mutableStateOf(false)
-    val paymentMethod = mutableStateOf("Cash")
-    val estimatedTime = mutableStateOf("")
 
     private val promoCodes = mapOf(
         "SAVE10" to 0.10,
@@ -23,36 +30,41 @@ class RideViewModel : ViewModel() {
         "RIDE5" to 0.05
     )
 
-    val savedAddresses = mutableListOf(
-        "123 Main Street",
-        "45 King Avenue",
-        "10 Elm Drive",
-        "88 Sunset Blvd",
-        "5 Maple Court"
-    )
-
+//    Ride Options
     val rideOptions = listOf(
-        RideOption("Economy", 5.0, 1.0),
-        RideOption("Premium", 8.0, 1.3),
-        RideOption("XL", 10.0, 1.6)
+        RideOption("Economy", baseFare = 5.0, multiplier = 1.0),
+        RideOption("Premium", baseFare = 8.0, multiplier = 1.3),
+        RideOption("XL", baseFare = 10.0, multiplier = 1.6)
     )
 
+//    Fare Calculation
     fun calculateFare() {
-        val distance = Random.nextInt(2, 20) // Dummy km
-        val selected = selectedRide.value ?: rideOptions.first()
-        var price = distance * 2.5 * selected.multiplier + selected.baseFare
-        if (promoCodes.containsKey(promoCode.value.uppercase())) {
-            price -= price * (promoCodes[promoCode.value.uppercase()] ?: 0.0)
-            discountApplied.value = true
+        if (pickup.value != null && destination.value != null) {
+            val distance = Random.nextDouble(1.0, 15.0) // simulate km
+            val selected = selectedRide.value ?: rideOptions.first()
+
+            var price = (distance * 2.5 * selected.multiplier) + selected.baseFare
+
+            val promo = promoCode.value.uppercase()
+            if (promoCodes.containsKey(promo)) {
+                price -= price * (promoCodes[promo] ?: 0.0)
+                discountApplied.value = true
+            } else {
+                discountApplied.value = false
+            }
+
+            fare.value = price
+            eta.value = "${(distance * 3).toInt()} mins"
         }
-        fare.value = price
-        estimatedTime.value = "${Random.nextInt(5, 15)} min"
     }
 
-    fun addSavedAddress(newAddress: String): Boolean {
-        return if (newAddress.isNotBlank() && !savedAddresses.contains(newAddress)) {
-            savedAddresses.add(newAddress)
-            true
-        } else false
+//    Add Custom Address
+    fun addAddress(street: String, city: String) {
+        if (street.isNotBlank() && city.isNotBlank()) {
+            val newAddress = Address(street.trim(), city.trim())
+            if (!allAddresses.value.contains(newAddress)) {
+                allAddresses.value.add(newAddress)
+            }
+        }
     }
 }
