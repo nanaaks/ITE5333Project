@@ -17,7 +17,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
         setContent {
             AppRoot()
         }
@@ -26,13 +25,12 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppRoot() {
-    val navController = rememberNavController()
-
-    val userViewModel: UserViewModel = viewModel()
-
     AppTheme {
+        val navHostController = rememberNavController()
+        val userViewModel: UserViewModel = viewModel()
+
         Surface {
-            NavGraph(navController = navController, userViewModel = userViewModel)
+            NavGraph(navController = navHostController, userViewModel = userViewModel)
         }
     }
 }
