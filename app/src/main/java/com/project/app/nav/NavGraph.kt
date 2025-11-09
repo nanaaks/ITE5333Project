@@ -10,8 +10,8 @@ import com.project.app.viewmodel.UserViewModel
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    userViewModel: UserViewModel,
-    toggleColorScheme : () -> Unit
+    userViewModel: UserViewModel
+    //toggleColorScheme : () -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -41,8 +41,8 @@ fun NavGraph(
             ResultScreen(navController)
         }
 
-        composable(Route.Settings.routeName) {
-            SettingsScreen(toggleColorScheme)
-        }
+//        composable(Route.Settings.routeName) {
+//            SettingsScreen(toggleColorScheme)
+//        }
     }
 }

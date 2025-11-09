@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import com.project.app.model.User
+
 class UserViewModel : ViewModel() {
     private val _user = MutableStateFlow(User())
     val user: StateFlow<User> = _user
