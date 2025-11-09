@@ -20,6 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -33,79 +34,96 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
-
 @Composable
 fun SettingsScreen(
-    toggleColorScheme: () -> Unit
+    toggleColorScheme : () -> Unit
 ) {
+    // State Variables
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
 
-    Column(
+    var isDarkMode by remember { mutableStateOf(false) }
+    var isEnabled by remember { mutableStateOf(false) }
+
+    Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize()
     ) {
-        Text("Settings Screen", style = MaterialTheme.typography.titleLarge)
+        Text("Settings", style = MaterialTheme.typography.titleLarge)
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Show Bottom Sheet Button
-        Button(
-            modifier = Modifier.fillMaxWidth(0.9f),
+        Text("Toggle Color Scheme")
+
+        Switch(
+            checked = isDarkMode,
+            onCheckedChange =  { toggleColorScheme() }
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text("Enable/Disable Notifications")
+
+        Switch(
+            checked = isEnabled,
+            onCheckedChange = { isEnabled = it }
+        )
+
+        Button(modifier = Modifier.fillMaxWidth(),
             onClick = {
-                showBottomSheet = !sheetState.isVisible
-            }
-        ) {
-            Text("Show Bottom Sheet")
-        }
+                //if the bottom sheet is not already visible then show it
+                if (!sheetState.isVisible) {
+                    showBottomSheet = true //show the bottom sheet
+                }else{
+                    showBottomSheet = false
+                }
+            }) {
+            Text("About App")
+        }//Button
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Toggle Theme Button
-        Button(
-            modifier = Modifier.fillMaxWidth(0.9f),
-            onClick = toggleColorScheme
-        ) {
-            Text("Toggle Color Scheme")
-        }
+        if (showBottomSheet){
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Bottom Sheet Content
-        if (showBottomSheet) {
             ModalBottomSheet(
                 onDismissRequest = { showBottomSheet = false },
                 sheetState = sheetState
             ) {
+
                 BottomSheetContent(
                     icon = Icons.Default.Info,
-                    title = "App Info",
-                    message = "Welcome to the RideShare App!\n\n" +
-                            "Use this screen to toggle between light and dark modes, " +
-                            "and check app info in this bottom sheet.\n\n" +
-                            "This bottom sheet is scrollable if the content grows longer."
-                )
-            }
-        }
+                    title = "App Information",
+                    message = "Welcome to PickApp!\n" +
+                            "App Name: PickApp\n" +
+                            "Developer Name: Group1\n" +
+                            "App Version: 0.02"
+                )//BottomSheetContent
+            }//ModalBottomSheet
+        }//if
     }
 }
 
 @Composable
 fun BottomSheetContent(
-    icon: ImageVector,
-    title: String,
-    message: String
-) {
-    Column(
+    icon : ImageVector,
+    title : String,
+    message : String
+){
+
+    Column (
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(horizontal = 20.dp, vertical = 20.dp)
-    ) {
-        Row(
+            .padding(
+                horizontal = 20.dp,
+                vertical = 20.dp
+            )
+    ){
+        Row (
             modifier = Modifier.fillMaxWidth()
-        ) {
+        ){
+
             Icon(
                 imageVector = icon,
                 contentDescription = null,
@@ -115,11 +133,15 @@ fun BottomSheetContent(
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            Column(modifier = Modifier.fillMaxWidth()) {
-                Text(title, style = MaterialTheme.typography.titleLarge)
+            Column (modifier = Modifier.fillMaxWidth()){
+                Text(title,
+                    style = MaterialTheme.typography.titleLarge)
+
                 Spacer(modifier = Modifier.width(8.dp))
+
                 Text(message, style = MaterialTheme.typography.bodyLarge)
-            }
-        }
-    }
-}
+            }//Column
+
+        }//Row
+    }//Column
+}//BottomSheetContent

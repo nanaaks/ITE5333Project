@@ -32,8 +32,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.project.app.viewmodel.UserViewModel
 import com.project.app.nav.Route
+import com.project.app.ui.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,9 +43,15 @@ fun HomeScreen (
     navController: NavController,
     userViewModel: UserViewModel
 ) {
+    val tabNavHostController = rememberNavController()
+
     var showMenu by remember { mutableStateOf(false) }
 
     val user by userViewModel.user.collectAsState()
+
+    var isDarkMode by remember { mutableStateOf(false) }
+
+    AppTheme (darkTheme = isDarkMode) {}
 
     Scaffold (
         topBar = {
