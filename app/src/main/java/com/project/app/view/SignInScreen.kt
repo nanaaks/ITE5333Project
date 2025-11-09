@@ -37,14 +37,15 @@ import com.project.app.nav.Route
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignInScreen (
+fun SignInScreen(
     navController: NavController,
     userViewModel: UserViewModel
 ) {
-    var email by remember { mutableStateOf("johndoe@email.com") }
-    var password by remember { mutableStateOf("password123") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf("") }
 
-    Scaffold (
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Sign In") },
@@ -53,12 +54,18 @@ fun SignInScreen (
                     titleContentColor = Color.White
                 )
             )
-        }//topBar
+        }
     ) { innerPadding ->
-        Column (
-            modifier = Modifier.fillMaxSize().padding(innerPadding)
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             OutlinedTextField(
                 value = email,
@@ -66,7 +73,7 @@ fun SignInScreen (
                 label = { Text("Email Address") },
                 textStyle = MaterialTheme.typography.bodyLarge,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -76,52 +83,71 @@ fun SignInScreen (
                 onValueChange = { password = it },
                 label = { Text("Password") },
                 textStyle = MaterialTheme.typography.bodyLarge,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
+                modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-            Button(onClick = {
-                // Update user object in UserViewModel with login credentials
-                userViewModel.updateLogin(email, password)
+            Button(
+                onClick = {
+                    if (email.isBlank() || password.isBlank()) {
+                        errorMessage = "Please enter your email and password."
+                    } else {
+                        val user = userViewModel.login(email, password)
+                        if (user != null) {
+                            val destination = if (user.role == "Driver")
+                                Route.Drive.routeName
+                            else
+                                Route.Home.routeName
 
-                //Navigate to HomeScreen if credentials valid
-                navController.navigate(Route.Home.routeName) {
-                    popUpTo(0) {
-                        // reset entire navigation and leave only SignIn screen
-                        inclusive = true
+                            navController.navigate(destination) {
+                                popUpTo(0) { inclusive = true }
+                            }
+                        } else {
+                            errorMessage = "Invalid credentials. Please try again."
+                        }
                     }
-                }
-            },
+                },
                 shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray, contentColor = Color.White),
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.DarkGray,
+                    contentColor = Color.White
+                ),
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Sign In", style = MaterialTheme.typography.bodyLarge)
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            if (errorMessage.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = errorMessage,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 12.dp),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = "Don't have account yet?",
-                    style = MaterialTheme.typography.bodyLarge.copy(color = Color.Black),
+                    text = "Don’t have an account? ",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    text = "Sign Up",
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.clickable {
-
-                        //Navigate to SignUpScreen
-                        //navController.navigate(Route.SignUp.routeName)
-
+                        navController.navigate(Route.SignUp.routeName)
                     }
                 )
             }
-        }//Column
-    }//Scaffold
+        }
+    }
 }
