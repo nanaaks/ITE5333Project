@@ -87,11 +87,12 @@ fun HomeScreen (
                         )//DropdownMenuItem
 
                         DropdownMenuItem(
-                            text = { Text("Account")},
+                            text = { Text("Settings")},
                             onClick = {
                                 showMenu = false
                                 //navigate to Account Screen and supply the value for accountType parameter for the route
                                 //navController.navigate(Route.Account.createRoute(accountType = "Premium"))
+                                //navController.navigate(Route.Settings.createRoute(accountType = "Premium"))
                             }
                         )//DropdownMenuItem
 
