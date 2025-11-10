@@ -21,13 +21,16 @@ fun RiderNavGraph(
             RideScreen(navController)
         }
 
-
         composable(RiderTab.Profile.routeName) {
             AccountScreen(userViewModel = userViewModel)
         }
 
         composable(RiderTab.Settings.routeName) {
             SettingsScreen(toggleColorScheme = {})
+        }
+
+        composable(Route.Result.routeName) {
+            ResultScreen(navController)
         }
     }
 }
