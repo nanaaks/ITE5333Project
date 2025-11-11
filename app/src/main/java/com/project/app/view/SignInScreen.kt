@@ -31,16 +31,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.project.app.nav.Routes
 import com.project.app.viewmodel.UserViewModel
-import com.project.app.nav.Route
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignInScreen(
     navController: NavController,
-    userViewModel: UserViewModel
+    userVM: UserViewModel
 ) {
+
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
@@ -95,15 +97,12 @@ fun SignInScreen(
                     if (email.isBlank() || password.isBlank()) {
                         errorMessage = "Please enter your email and password."
                     } else {
-                        val user = userViewModel.login(email, password)
+                        val user = userVM.login(email, password)
                         if (user != null) {
-                            val destination = if (user.role == "Driver")
-                                Route.Drive.routeName
-                            else
-                                Route.Home.routeName
-
-                            navController.navigate(destination) {
-                                popUpTo(0) { inclusive = true }
+                            navController.navigate(Routes.Home.routeName) {
+                                popUpTo(0) {
+                                    inclusive = true
+                                }
                             }
                         } else {
                             errorMessage = "Invalid credentials. Please try again."
@@ -144,7 +143,7 @@ fun SignInScreen(
                     color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.clickable {
-                        navController.navigate(Route.SignUp.routeName)
+                        navController.navigate(Routes.SignUp.routeName)
                     }
                 )
             }

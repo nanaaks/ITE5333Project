@@ -94,8 +94,7 @@ fun SettingsScreen(
                 BottomSheetContent(
                     icon = Icons.Default.Info,
                     title = "App Information",
-                    message = "Welcome to PickApp!\n" +
-                            "App Name: PickApp\n" +
+                    message = "App Name: PickApp\n" +
                             "Developer Name: Group1\n" +
                             "App Version: 0.02"
                 )//BottomSheetContent

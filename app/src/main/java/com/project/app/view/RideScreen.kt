@@ -50,9 +50,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.project.app.nav.RiderNavGraph
-import com.project.app.nav.RiderTab
-import com.project.app.nav.Route
+import com.project.app.nav.Routes
 import com.project.app.viewmodel.RideViewModel
 import com.project.app.viewmodel.UserViewModel
 
@@ -208,7 +206,7 @@ fun RideScreen(
                 Button(
                     onClick = {
                         if (rideViewModel.pickup.value != null && rideViewModel.destination.value != null) {
-                            navController.navigate(Route.Result.routeName)
+                            navController.navigate(Routes.Result.routeName)
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),

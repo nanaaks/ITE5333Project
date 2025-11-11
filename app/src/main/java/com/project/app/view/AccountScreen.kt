@@ -30,14 +30,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.project.app.viewmodel.UserViewModel
 
 
 @Composable
 fun AccountScreen(
-    userViewModel: UserViewModel = viewModel()
+    userVM: UserViewModel
 ) {
-    val userState by userViewModel.user.collectAsState()
+    val userState by userVM.user.collectAsState()
 
     var name by remember { mutableStateOf(userState.name ?: "") }
     var email by remember { mutableStateOf(userState.email) }
@@ -104,7 +105,7 @@ fun AccountScreen(
 
             Button(
                 onClick = {
-                    userViewModel.updateUserDetails(name, email, phone, password)
+                    userVM.updateUserDetails(name, email, phone, password)
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)

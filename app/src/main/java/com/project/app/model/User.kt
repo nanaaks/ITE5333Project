@@ -5,6 +5,5 @@ data class User(
     var email: String = "",
     var password: String = "",
     var phone: String = "",
-    var payment: String="",
-    var role: String = ""
+    var payment: String = ""
 )

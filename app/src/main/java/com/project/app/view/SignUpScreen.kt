@@ -26,9 +26,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.project.app.model.User
-import com.project.app.nav.Route
+import com.project.app.nav.Routes
 import com.project.app.viewmodel.UserViewModel
 
 @OptIn( ExperimentalMaterial3Api::class,
@@ -37,13 +38,14 @@ import com.project.app.viewmodel.UserViewModel
 @Composable
 fun SignUpScreen(
     navController: NavController,
-    userViewModel: UserViewModel
+    userVM: UserViewModel
 ) {
+
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var role by remember { mutableStateOf("Rider") }
+    var payment by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
 
     Scaffold(
@@ -88,36 +90,41 @@ fun SignUpScreen(
             )
             Spacer(Modifier.height(12.dp))
 
-            // Role dropdown
+            // Payment dropdown
             var expanded by remember { mutableStateOf(false) }
-            ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
+
+            ExposedDropdownMenuBox(
+                expanded = expanded,
+                onExpandedChange = { expanded = !expanded }
+            ) {
                 OutlinedTextField(
                     readOnly = true,
-                    value = role,
+                    value = payment,
                     onValueChange = {},
-                    label = { Text("Role") },
+                    label = { Text("Payment Method") },
                     modifier = Modifier
                         .menuAnchor()
                         .fillMaxWidth()
                 )
                 ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                    DropdownMenuItem(text = { Text("Rider") }, onClick = { role = "Rider"; expanded = false })
-                    DropdownMenuItem(text = { Text("Driver") }, onClick = { role = "Driver"; expanded = false })
+                    DropdownMenuItem(text = { Text("Credit or Debit Card") }, onClick = { payment = "Card"; expanded = false })
+                    DropdownMenuItem(text = { Text("Gift Card") }, onClick = { payment = "Gift"; expanded = false })
+                    DropdownMenuItem(text = { Text("Digital Wallet") }, onClick = { payment = "Wallet"; expanded = false })
                 }
             }
 
             Spacer(Modifier.height(16.dp))
+
             Button(
                 onClick = {
                     if (name.isBlank() || email.isBlank() || password.length < 6) {
                         errorMessage = "Please fill all fields correctly."
                     } else {
-                        val success = userViewModel.registerUser(
-                            User(name, email, password, phone, role)
+                        val success = userVM.registerUser(
+                            User(name, email, password, phone, payment)
                         )
                         if (success) {
-                            val next = if (role == "Driver") Route.Drive.routeName else Route.Home.routeName
-                            navController.navigate(next)
+                            navController.navigate(Routes.Tabs.routeName)
                         } else errorMessage = "Email already registered."
                     }
                 },
