@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -50,7 +51,7 @@ fun SignInScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Sign In") },
+                title = { Text("PickApp") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.DarkGray,
                     titleContentColor = Color.White
@@ -68,6 +69,16 @@ fun SignInScreen(
             verticalArrangement = Arrangement.Top
         ) {
             Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = "Sign In",
+                color = Color.Black,
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+                textAlign = TextAlign.Start
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
                 value = email,

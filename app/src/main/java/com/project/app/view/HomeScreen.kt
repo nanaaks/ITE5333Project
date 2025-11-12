@@ -77,7 +77,7 @@ fun HomeScreen (
         Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
-                    title = { Text("Home") },
+                    title = { Text("PickApp") },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = Color.DarkGray,
                         titleContentColor = Color.White
@@ -183,8 +183,8 @@ fun HomeScreen (
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(8.dp)
+                    .padding(top = 100.dp)
             ) {
-
                 Text(
                     text = "Hello ${user.name}!",
                     color = Color.Black,
@@ -193,153 +193,150 @@ fun HomeScreen (
                     textAlign = TextAlign.Start
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
-            }//Column
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
 
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(8.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                item {
-                    Text(
-                        text = "Welcome to PickApp!",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        textAlign = TextAlign.Center
-                    )
-                }
+                    item {
+                        Text(
+                            text = "Welcome to PickApp",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            textAlign = TextAlign.Center
+                        )
+                    }
 
-                item {
-                    Text(
-                        text = "Book a Ride or Search for Passengers",
-                        color = Color.Black,
-                        style = MaterialTheme.typography.headlineLarge,
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
-                    )
-                }
+                    item {
+                        Text(
+                            text = "Book a Ride or Search for Passengers",
+                            color = Color.Black
+                        )
+                    }
 
-                item {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp)
-                            .clickable {
-                                //open premium sign up dialog
-                            },
-                        elevation = CardDefaults.cardElevation(8.dp)
-                    ) {
-                        Column(
+                    item {
+                        Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(8.dp)
+                                .padding(vertical = 8.dp)
+                                .clickable {
+                                    //open premium sign up dialog
+                                },
+                            elevation = CardDefaults.cardElevation(8.dp)
                         ) {
-                            Text(
-                                text = "Enjoy bonuses with a Premium account!\n\n"
-                                        + "Save on rides!\n\n"
-                                        + "Exclusive offers!\n\n"
-                                        +"Member-only promos!",
-                                style = MaterialTheme.typography.titleMedium
-                            )
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp)
+                            ) {
+                                Text(
+                                    text = "Enjoy bonuses with a Premium account!\n\n"
+                                            + "Save on rides!\n"
+                                            + "Exclusive offers!\n"
+                                            +"Member-only promos!\n\n"
+                                            +"See terms and benefits details",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
 
-                            Spacer(modifier = Modifier.padding(8.dp))
+                                Spacer(modifier = Modifier.padding(8.dp))
+                            }
                         }
                     }
-                }
 
-                item {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp)
-                            .clickable {
-                                //apply promotion to account
-                            },
-                        elevation = CardDefaults.cardElevation(8.dp)
-                    ) {
-                        Column(
+                    item {
+                        Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(8.dp)
+                                .padding(vertical = 8.dp)
+                                .clickable {
+                                    //apply promotion to account
+                                },
+                            elevation = CardDefaults.cardElevation(8.dp)
                         ) {
-                            Text(
-                                text = "Earn 5% on rides\n\n"
-                                        + "Get 4 weeks free",
-                                style = MaterialTheme.typography.titleMedium
-                            )
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp)
+                            ) {
+                                Text(
+                                    text = "Earn 5% on rides\n\n"
+                                            + "Get 4 weeks free",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
 
-                            Spacer(modifier = Modifier.padding(8.dp))
+                                Spacer(modifier = Modifier.padding(8.dp))
+                            }
                         }
                     }
-                }
 
-                item {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp)
-                            .clickable {
-                                //apply promotion to account
-                            },
-                        elevation = CardDefaults.cardElevation(8.dp)
-                    ) {
-                        Column(
+                    item {
+                        Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(8.dp)
+                                .padding(vertical = 8.dp)
+                                .clickable {
+                                    //apply promotion to account
+                                },
+                            elevation = CardDefaults.cardElevation(8.dp)
                         ) {
-                            Text(
-                                text = "10% - 30% off Rides\n\n"
-                                        + "Expires on 31st Nov, 2025",
-                                style = MaterialTheme.typography.titleMedium
-                            )
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp)
+                            ) {
+                                Text(
+                                    text = "10% - 30% off Rides\n\n"
+                                            + "Expires on 31st Nov, 2025",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
 
-                            Spacer(modifier = Modifier.padding(8.dp))
+                                Spacer(modifier = Modifier.padding(8.dp))
+                            }
                         }
                     }
-                }
 
-                item {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp)
-                            .clickable {
-                                //apply promotion to account
-                            },
-                        elevation = CardDefaults.cardElevation(8.dp)
-                    ) {
-                        Column(
+                    item {
+                        Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(8.dp)
+                                .padding(vertical = 8.dp)
+                                .clickable {
+                                    //apply promotion to account
+                                },
+                            elevation = CardDefaults.cardElevation(8.dp)
                         ) {
-                            Text(
-                                text = "Let us know what you think!\n\n"
-                                        + "Provide feedback",
-                                style = MaterialTheme.typography.titleMedium
-                            )
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp)
+                            ) {
+                                Text(
+                                    text = "Let us know what you think!\n\n"
+                                            + "Provide feedback",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
 
-                            Spacer(modifier = Modifier.padding(8.dp))
+                                Spacer(modifier = Modifier.padding(8.dp))
+                            }
                         }
                     }
-                }
 
-                //show promotions and updates
+                    //show promotions and updates
 //                newsInfo.forEach { info ->
 //                    item {
 //                        InfoCard(info)
 //                    }
 //                }
 
-            }//LazyColumn
+                }//LazyColumn
+            }//Column
 
             TabNavGraph(
                 navController,
                 tabNavController,
                 userVM
             )//TabNavGraph
-
         }//Scaffold
     }//Theme
 }
