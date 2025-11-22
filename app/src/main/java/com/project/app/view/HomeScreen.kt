@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
@@ -112,6 +113,12 @@ fun HomeScreen (
 
                             DropdownMenuItem(
                                 text = { Text("Settings") },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Filled.Settings,
+                                        contentDescription = "Settings"
+                                    )
+                                },
                                 onClick = {
                                     showMenu = false
                                     navController.navigate(Routes.Settings.routeName)
