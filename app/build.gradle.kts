@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
+
 }
 
 android {
@@ -70,4 +72,22 @@ dependencies {
 
     // Preferences DataStore
     implementation("androidx.datastore:datastore-preferences:1.1.7")
+
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+
+    // Moshi converter for Retrofit
+    implementation("com.squareup.retrofit2:converter-moshi:2.11.0")
+
+    // Moshi (for JSON parsing)
+    implementation("com.squareup.moshi:moshi-kotlin:1.15.0")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.0")
+
+    //Coil (for parsing images)
+    implementation("io.coil-kt:coil-compose:2.7.0")
+
+    //for Room database
+    implementation("androidx.room:room-runtime:2.8.3")
+    ksp("androidx.room:room-compiler:2.8.3")
+    implementation("androidx.room:room-ktx:2.8.3")
 }
