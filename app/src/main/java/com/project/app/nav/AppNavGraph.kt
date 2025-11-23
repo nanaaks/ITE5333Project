@@ -1,11 +1,13 @@
 package com.project.app.nav
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.project.app.view.*
+import com.project.app.viewmodel.DriveViewModel
 import com.project.app.viewmodel.UserViewModel
 
 @Composable
@@ -16,6 +18,8 @@ fun AppNavGraph(
     isDarkMode: Boolean
 ) {
     val tabNavController = rememberNavController()
+    val driveVM: DriveViewModel = viewModel()
+
 
     NavHost(
         navHostController,
@@ -30,10 +34,11 @@ fun AppNavGraph(
         }
 
         composable(Routes.Tabs.routeName) {
-            HomeScreen(
+            TabNavGraph(
                 navHostController,
                 tabNavController,
-                userVM
+                userVM,
+                driveVM
             )
         }
 
