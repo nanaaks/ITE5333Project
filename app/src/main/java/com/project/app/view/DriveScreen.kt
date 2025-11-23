@@ -13,21 +13,23 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,22 +38,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.project.app.viewmodel.DriveViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DriveScreen(
     navController: NavController,
+    driveVM: DriveViewModel
 ) {
-//Mock Data
-    var isOnline by remember { mutableStateOf(true) }
-    val requests by remember(isOnline) { mutableStateOf(if (isOnline) {
-        listOf(
-            "John, 0.8 mi, Rogers Centre, $12.40, Now",
-            "Sarah, 2.1 mi, Airport, $28.00, 7:30 PM")
-    } else { emptyList() }
-        )
-    }
+
+    val jobs by driveVM.jobs.collectAsState(initial = emptyList())
+    val acceptedJobs = jobs.filter { it.status == "Accepted" }
+    val pendingJobs = jobs.filter { it.status == "Pending" }
+    val totalTrips = acceptedJobs.size
+    val totalEarnings = acceptedJobs.sumOf { it.price }
 
     Scaffold(
         topBar = {
@@ -60,7 +61,7 @@ fun DriveScreen(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.DarkGray,
                     titleContentColor = Color.White
-                ), // title
+                ),
                 navigationIcon = {
                     IconButton(
                         onClick = { navController.popBackStack() }
@@ -71,30 +72,14 @@ fun DriveScreen(
                             fontWeight = FontWeight.Bold
                         )
                     }
-                }, // navigationIcon : Back
-                actions = {
-                    Row(verticalAlignment = Alignment.CenterVertically)
-                    {
-                        Switch(
-                            checked = isOnline,
-                            onCheckedChange = { isOnline = it }
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Text(
-                            text = if (isOnline) "Online" else "Offline",
-                            fontWeight = FontWeight.Medium,
-                            color = Color.White
-                        )
-                    }
-                }// Switch: Online, Offline
-            ) // CenterAlignedTopAppBar
-        } // topBar
+                }
+            )
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp)
         ) {
             Box(
                 modifier = Modifier
@@ -107,24 +92,11 @@ fun DriveScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column {
-                        Text(
-                            "Today",
-                            fontSize = 16.sp,
-                            color = Color.DarkGray
-                        )// Date
+                        Text("Today", fontSize = 16.sp, color = Color.DarkGray)
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                "$",
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.Green
-                            )
+                            Text("$", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.Green)
                             Spacer(Modifier.width(4.dp))
-                            Text(
-                                "48.50",
-                                fontSize = 28.sp,
-                                fontWeight = FontWeight.Bold
-                            ) // Earning
+                            Text("%.2f".format(totalEarnings), fontSize = 28.sp, fontWeight = FontWeight.Bold)
                         }
                     }
                     Row(
@@ -132,100 +104,90 @@ fun DriveScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End
                     ) {
-                        Text(
-                            "3 trips",
-                            fontSize = 16.sp,
-                            color = Color.DarkGray
-                        )
-                    } //trips
+                        Text("$totalTrips trips", fontSize = 16.sp, color = Color.DarkGray)
+                    }
                 }
             }
-            //Box: Earnings Box
             Spacer(Modifier.height(16.dp))
-            if (requests.isEmpty()) {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(
-                        text = if (isOnline) {
-                            "No requests nearby"
-                        } else {
-                            "Go online to receive requests"
-                        },
-                        color = Color.Gray
-                    )
+            if (pendingJobs.isEmpty()) {
+                Box(Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center) {
+                    Text(text = "No requests nearby", color = Color.Gray)
                 }
             } else {
-                LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    items(requests) { str ->
-                        val p = str.split(", ")
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    itemsIndexed(pendingJobs) { idx, job ->
                         RequestBox(
-                            name = p[0],
-                            dist = p[1],
-                            dest = p[2],
-                            fare = p[3],
-                            time = p[4],
-                            scheduled = p[4] != "Now"
+                            name = job.riderName,
+                            start = job.startAddress,
+                            dest = job.endAddress,
+                            price = job.price,
+                            eta = job.rideDuration,
+                            payment = job.payment,
+                            rideOption = job.rideOption,
+                            onAccept = { driveVM.acceptJob(job.id) },
+                            onDecline = { driveVM.declineJob(job.id) },
+                            isAlternate = idx % 2 == 1
                         )
                     }
-                } // LazyColumn
+                }
             }
         }
     }
 }
 
 @Composable
-fun RequestBox(name: String, dist: String, dest: String, fare: String, time: String, scheduled: Boolean) {
+fun RequestBox(
+    name: String,
+    start: String,
+    dest: String,
+    price: Double,
+    eta: String,
+    payment: String,
+    rideOption: String,
+    onAccept: () -> Unit,
+    onDecline: () -> Unit,
+    isAlternate: Boolean
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .border(1.dp, Color.LightGray)
-            .background(Color.White)
+            .border(1.dp, if(isAlternate) Color(0xFFB3E5FC) else Color.LightGray)
+            .background(if(isAlternate) Color(0xFFE3F2FD) else Color.White)
             .padding(16.dp)
     ) {
         Column {
             Row {
-                Text("${name}",
-                    Modifier.weight(1f),
-                    fontWeight = FontWeight.SemiBold
+                Text(
+                    name, Modifier.weight(1f), fontWeight = FontWeight.SemiBold
                 )
-                Text(dist,
-                    color = Color.Gray
-                )
-            } // Text : name & distance
-
+                Icon(Icons.Default.Place, contentDescription = null, tint = Color(0xFF039BE5))
+            }
             Spacer(Modifier.height(4.dp))
-            Text(dest) // Text: destination
-
-            Spacer(Modifier.height(8.dp))
-            Row(Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(fare,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(time,
-                    fontWeight = FontWeight.Bold,
-                    color = if (scheduled) Color.Green
-                    else Color.Gray
-                )
-            }// Text: fare & time
-
+            Text("From: $start", color = Color.DarkGray)
+            Text("To: $dest", color = Color.DarkGray)
+            Spacer(Modifier.height(4.dp))
+            Row {
+                Text("$${"%.2f".format(price)}", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Spacer(Modifier.width(16.dp))
+                Icon(Icons.Default.AccessTime, contentDescription = null, tint = Color(0xFF00897B))
+                Text(eta, fontWeight = FontWeight.Bold, color = Color.Green)
+            }
+            Spacer(Modifier.height(4.dp))
+            Text("Type: $rideOption | Payment: $payment", fontSize = 14.sp, color = Color.Gray)
             Spacer(Modifier.height(12.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp))
-            {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(
-                    onClick = {},
+                    onClick = onAccept,
                     Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(Color.DarkGray)
-                ) {
-                    Text("Accept")
-                } // Button : Accept
+                    colors = ButtonDefaults.buttonColors(Color(0xFF43A047))
+                ) { Text("Accept") }
                 OutlinedButton(
-                    onClick = {},
-                    Modifier.weight(1f)
-                ) {
-                    Text("Decline")
-                } // Button : Decline
+                    onClick = onDecline,
+                    Modifier.weight(1f),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFD32F2F))
+                ) { Text("Decline") }
             }
         }
     }
