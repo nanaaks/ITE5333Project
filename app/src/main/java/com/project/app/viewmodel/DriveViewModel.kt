@@ -1,7 +1,7 @@
 package com.project.app.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.project.app.data.Booking
+import com.project.app.model.Booking
 import com.project.app.data.RideRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
