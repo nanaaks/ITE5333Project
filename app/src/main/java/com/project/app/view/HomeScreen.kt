@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.OpenInNewOff
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Badge
@@ -50,16 +49,18 @@ import com.project.app.viewmodel.UserViewModel
 import com.project.app.ui.theme.AppTheme
 import com.project.app.nav.Routes
 import com.project.app.nav.TabRoutes
-import com.project.app.nav.TabNavGraph
+import com.project.app.viewmodel.DriveViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen (
     navHostController: NavHostController,
-    tabNavController : NavHostController,
-    userVM: UserViewModel
-) {
+    tabNavController: NavHostController,
+    userVM: UserViewModel,
+    driveVM: DriveViewModel,
+
+    ) {
 
     val screens = listOf(
         TabRoutes.Home,
@@ -70,7 +71,6 @@ fun HomeScreen (
     val user by userVM.user.collectAsState()
 
     var showMenu by remember { mutableStateOf(false) }
-
     var isDarkMode by remember { mutableStateOf(false) }
 
     AppTheme(darkTheme = isDarkMode) {
@@ -146,50 +146,6 @@ fun HomeScreen (
                 )
             }, //topBar
 
-            bottomBar = {
-                NavigationBar {
-                    val navBackStackEntry by tabNavController.currentBackStackEntryAsState()
-                    val currentDestination = navBackStackEntry?.destination
-
-                    screens.forEach { screen ->
-                        NavigationBarItem(
-                            label = { Text(screen.title) },
-                            icon = {
-                                Icon(
-                                    screen.icon,
-                                    contentDescription = screen.title
-                                )
-                                BadgedBox(
-                                    badge = {
-                                        if (screen.badgeCount > 0) {
-                                            Badge() {
-                                                Text(screen.badgeCount.toString())
-                                            }
-                                        }
-                                    }
-                                ) {
-                                    Icon(
-                                        screen.icon,
-                                        contentDescription = screen.title
-                                    )
-                                }
-                            },
-                            selected = currentDestination?.hierarchy?.any { it.route == screen.routeName } == true,
-                            onClick = {
-                                tabNavController.navigate(screen.routeName) {
-                                    //remove previously visited tab from the Navigation Stack
-                                    popUpTo(tabNavController.graph.findStartDestination().id) {
-                                        //and save any data
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true //reload previously saved data
-                                }
-                            }
-                        )
-                    }//NavigationBarItem
-                }//NavigationBar
-            }//bottomBar
         ) {
             Column(
                 modifier = Modifier
@@ -344,11 +300,6 @@ fun HomeScreen (
                 }//LazyColumn
             }//Column
 
-            TabNavGraph(
-                navHostController,
-                tabNavController,
-                userVM
-            )//TabNavGraph
         }//Scaffold
     }//Theme
 }
