@@ -11,7 +11,7 @@ import com.project.app.viewmodel.UserViewModel
 
 @Composable
 fun TabNavGraph(
-    navController: NavHostController,
+    navHostController: NavHostController,
     tabNavController: NavHostController,
     userVM : UserViewModel
 ) {
@@ -20,15 +20,15 @@ fun TabNavGraph(
         startDestination = TabRoutes.Home.routeName
     ) {
         composable(TabRoutes.Home.routeName) {
-            HomeTabScreen(navController, tabNavController, userVM)
+            HomeTabScreen(navHostController, tabNavController, userVM)
         }
 
         composable(TabRoutes.Ride.routeName) {
-            RideScreen(navController)
+            RideScreen(navHostController)
         }
 
         composable(TabRoutes.Drive.routeName) {
-            DriveScreen(navController)
+            DriveScreen(navHostController)
         }
     }
 }

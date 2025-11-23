@@ -32,7 +32,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.project.app.nav.Routes
 import com.project.app.viewmodel.UserViewModel
@@ -40,7 +39,7 @@ import com.project.app.viewmodel.UserViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignInScreen(
-    navController: NavController,
+    navHostController: NavController,
     userVM: UserViewModel
 ) {
 
@@ -110,7 +109,7 @@ fun SignInScreen(
                     } else {
                         val user = userVM.login(email, password)
                         if (user != null) {
-                            navController.navigate(Routes.Home.routeName) {
+                            navHostController.navigate(Routes.Home.routeName) {
                                 popUpTo(0) {
                                     inclusive = true
                                 }
@@ -154,7 +153,7 @@ fun SignInScreen(
                     color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.clickable {
-                        navController.navigate(Routes.SignUp.routeName)
+                        navHostController.navigate(Routes.SignUp.routeName)
                     }
                 )
             }

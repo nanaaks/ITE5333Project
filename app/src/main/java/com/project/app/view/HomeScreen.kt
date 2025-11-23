@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -50,14 +49,12 @@ import com.project.app.ui.theme.AppTheme
 import com.project.app.nav.Routes
 import com.project.app.nav.TabRoutes
 import com.project.app.nav.TabNavGraph
-import kotlin.compareTo
-import kotlin.toString
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen (
-    navController: NavHostController,
+    navHostController: NavHostController,
     tabNavController : NavHostController,
     userVM: UserViewModel
 ) {
@@ -107,7 +104,7 @@ fun HomeScreen (
                                 },
                                 onClick = {
                                     showMenu = false
-                                    navController.navigate(Routes.Account.routeName)
+                                    navHostController.navigate(Routes.Account.routeName)
                                 }
                             )//DropdownMenuItem
 
@@ -121,7 +118,7 @@ fun HomeScreen (
                                 },
                                 onClick = {
                                     showMenu = false
-                                    navController.navigate(Routes.Settings.routeName)
+                                    navHostController.navigate(Routes.Settings.routeName)
                                 }
                             )//DropdownMenuItem
 
@@ -129,7 +126,7 @@ fun HomeScreen (
                                 text = { Text("Logout") },
                                 onClick = {
                                     showMenu = false
-                                    navController.navigate(Routes.SignIn.routeName) {
+                                    navHostController.navigate(Routes.SignIn.routeName) {
                                         popUpTo(0) {
                                             inclusive = true
                                         }
@@ -340,7 +337,7 @@ fun HomeScreen (
             }//Column
 
             TabNavGraph(
-                navController,
+                navHostController,
                 tabNavController,
                 userVM
             )//TabNavGraph

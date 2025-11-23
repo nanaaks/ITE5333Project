@@ -10,27 +10,28 @@ import com.project.app.viewmodel.UserViewModel
 
 @Composable
 fun AppNavGraph(
-    navController: NavHostController,
-    userVM : UserViewModel,
-    toggleColorScheme : () -> Unit
+    navHostController: NavHostController,
+    userVM: UserViewModel,
+    toggleColorScheme: () -> Unit,
+    isDarkMode: Boolean
 ) {
     val tabNavController = rememberNavController()
 
     NavHost(
-        navController,
+        navHostController,
         startDestination = Routes.SignIn.routeName
     ) {
         composable(Routes.SignIn.routeName) {
-            SignInScreen(navController, userVM)
+            SignInScreen(navHostController, userVM)
         }
 
         composable(Routes.SignUp.routeName) {
-            SignUpScreen(navController, userVM)
+            SignUpScreen(navHostController, userVM)
         }
 
         composable(Routes.Tabs.routeName) {
             HomeScreen(
-                navController,
+                navHostController,
                 tabNavController,
                 userVM
             )
@@ -41,11 +42,14 @@ fun AppNavGraph(
         }
 
         composable(Routes.Result.routeName) {
-            ResultScreen(navController)
+            ResultScreen(navHostController)
         }
 
         composable(Routes.Settings.routeName) {
-            SettingsScreen(toggleColorScheme)
+            SettingsScreen(
+                toggleColorScheme,
+                isDarkMode
+            )
         }
     }
 }

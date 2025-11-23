@@ -20,13 +20,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.project.app.viewmodel.RideViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ResultScreen(navController: NavController) {
+fun ResultScreen(navHostController: NavController) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -56,7 +54,7 @@ fun ResultScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(
-                onClick = { navController.popBackStack() },
+                onClick = { navHostController.popBackStack() },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
             ) {
                 Text("Back to Home", color = Color.White)

@@ -26,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.project.app.model.User
 import com.project.app.nav.Routes
@@ -37,7 +36,7 @@ import com.project.app.viewmodel.UserViewModel
 )
 @Composable
 fun SignUpScreen(
-    navController: NavController,
+    navHostController: NavController,
     userVM: UserViewModel
 ) {
 
@@ -124,7 +123,7 @@ fun SignUpScreen(
                             User(name, email, password, phone, payment)
                         )
                         if (success) {
-                            navController.navigate(Routes.Tabs.routeName)
+                            navHostController.navigate(Routes.Tabs.routeName)
                         } else errorMessage = "Email already registered."
                     }
                 },

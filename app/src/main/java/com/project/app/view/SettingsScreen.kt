@@ -36,13 +36,13 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun SettingsScreen(
-    toggleColorScheme : () -> Unit
+    toggleColorScheme: () -> Unit,
+    isDarkMode: Boolean
 ) {
     // State Variables
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
 
-    var isDarkMode by remember { mutableStateOf(false) }
     var isEnabled by remember { mutableStateOf(false) }
 
     Column (
@@ -96,7 +96,7 @@ fun SettingsScreen(
                     title = "App Information",
                     message = "App Name: PickApp\n" +
                             "Developer Name: Group1\n" +
-                            "App Version: 0.02"
+                            "App Version: 0.03"
                 )//BottomSheetContent
             }//ModalBottomSheet
         }//if

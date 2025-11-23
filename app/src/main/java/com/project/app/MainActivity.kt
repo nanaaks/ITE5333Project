@@ -34,7 +34,7 @@ fun AppRoot() {
 
     var isDarkMode by remember { mutableStateOf(false) }
 
-    AppTheme {
+    AppTheme(darkTheme = isDarkMode) {
         val navHostController = rememberNavController()
 
         Surface {
@@ -43,7 +43,8 @@ fun AppRoot() {
                 userVM,
                 toggleColorScheme = {
                     isDarkMode = !isDarkMode
-                }
+                },
+                isDarkMode = isDarkMode
             )
         }
     }
