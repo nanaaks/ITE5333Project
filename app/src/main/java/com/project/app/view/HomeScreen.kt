@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.OpenInNewOff
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Badge
@@ -124,6 +126,12 @@ fun HomeScreen (
 
                             DropdownMenuItem(
                                 text = { Text("Logout") },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Filled.Logout,
+                                        contentDescription = "Logout"
+                                    )
+                                },
                                 onClick = {
                                     showMenu = false
                                     navHostController.navigate(Routes.SignIn.routeName) {
