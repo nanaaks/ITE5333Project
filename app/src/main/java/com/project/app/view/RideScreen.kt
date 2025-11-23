@@ -51,6 +51,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.project.app.nav.Routes
+import com.project.app.viewmodel.DriveViewModel
 import com.project.app.viewmodel.RideViewModel
 import com.project.app.viewmodel.UserViewModel
 
@@ -58,7 +59,9 @@ import com.project.app.viewmodel.UserViewModel
 @Composable
 fun RideScreen(
     navController: NavController,
-    rideViewModel: RideViewModel = viewModel()
+    driveVM: DriveViewModel,
+    rideViewModel: RideViewModel = viewModel(),
+    userName: String = "User" //Replace with real userName from UserViewModel
 ) {
     var showAddAddressDialog by remember { mutableStateOf(false) }
     var street by remember { mutableStateOf("") }
@@ -206,6 +209,8 @@ fun RideScreen(
                 Button(
                     onClick = {
                         if (rideViewModel.pickup.value != null && rideViewModel.destination.value != null) {
+                            rideViewModel.bookRide(userName= userName)
+                            driveVM.refreshJobs()
                             navController.navigate(Routes.Result.routeName)
                         }
                     },
