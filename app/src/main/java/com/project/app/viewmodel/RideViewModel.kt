@@ -3,8 +3,11 @@ package com.project.app.viewmodel
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.project.app.data.Address
+import com.project.app.data.RideRepository
 import com.project.app.data.dummyAddresses
+import com.project.app.model.Booking
 import com.project.app.model.RideOption
+import java.util.UUID
 import kotlin.random.Random
 
 class RideViewModel : ViewModel() {
@@ -66,6 +69,28 @@ class RideViewModel : ViewModel() {
                 allAddresses.value.add(newAddress)
             }
         }
+    }
+
+    // ฺBook Ride
+    fun bookRide(userName: String) {
+        val pickupStr = pickup.value?.let { "${it.street}, ${it.city}" } ?: ""
+        val destStr = destination.value?.let { "${it.street}, ${it.city}" } ?: ""
+        val rideDurationStr = eta.value
+        val fareDouble = fare.value
+        val paymentStr = paymentMethod.value
+
+        val booking = Booking(
+            id = UUID.randomUUID().toString(),
+            riderName = userName,
+            startAddress = pickupStr,
+            endAddress = destStr,
+            rideDuration = rideDurationStr,
+            price = fareDouble,
+            payment = paymentStr,
+            status = "Pending",
+            rideOption = selectedRide.value?.name ?: rideOptions.first().name
+        )
+        RideRepository.addBooking(booking)
     }
 }
 
