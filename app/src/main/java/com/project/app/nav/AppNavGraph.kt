@@ -1,25 +1,26 @@
 package com.project.app.nav
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.project.app.data.SettingsRepository
 import com.project.app.view.*
 import com.project.app.viewmodel.DriveViewModel
+import com.project.app.viewmodel.SettingsViewModel
 import com.project.app.viewmodel.UserViewModel
 
 @Composable
 fun AppNavGraph(
     navHostController: NavHostController,
     userVM: UserViewModel,
-    toggleColorScheme: () -> Unit,
-    isDarkMode: Boolean
+    settingsVM: SettingsViewModel
 ) {
     val tabNavController = rememberNavController()
     val driveVM: DriveViewModel = viewModel()
-
 
     NavHost(
         navHostController,
@@ -52,8 +53,7 @@ fun AppNavGraph(
 
         composable(Routes.Settings.routeName) {
             SettingsScreen(
-                toggleColorScheme,
-                isDarkMode
+                settingsVM = settingsVM
             )
         }
     }

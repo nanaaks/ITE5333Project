@@ -2,6 +2,7 @@
 
 package com.project.app.view
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -24,6 +26,8 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,50 +36,99 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.project.app.data.SettingsRepository
+import com.project.app.viewmodel.SettingsViewModel
 
 @Composable
 fun SettingsScreen(
-    toggleColorScheme: () -> Unit,
-    isDarkMode: Boolean
+    settingsVM: SettingsViewModel,
 ) {
-    // State Variables
+    val state by settingsVM.settingsData.collectAsState()
+
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
 
-    var isEnabled by remember { mutableStateOf(false) }
-
     Column (
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxSize()
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
-        Text("Settings", style = MaterialTheme.typography.titleLarge)
-
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text("Toggle Color Scheme")
-
-        Switch(
-            checked = isDarkMode,
-            onCheckedChange =  { toggleColorScheme() }
+        Text("Settings",
+            style = MaterialTheme.typography.titleLarge.copy(
+                fontSize = 36.sp
+            )
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Dark Mode: ${if (state.darkMode) "ON" else "OFF"}" ,
+                style = MaterialTheme.typography.labelLarge.copy(
+                    fontSize = 24.sp,
+                ))
+            Switch(
+                checked = state.darkMode,
+                onCheckedChange =  {
+                    settingsVM.enableDarkMode(!state.darkMode)
+                }
+            )
+        }
 
-        Text("Enable/Disable Notifications")
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Notifications: ${if (state.notify) "ON" else "OFF"}" ,
+                style = MaterialTheme.typography.labelLarge.copy(
+                    fontSize = 24.sp,
+                ))
+            Switch(
+                checked = state.notify,
+                onCheckedChange = {
+                    settingsVM.enableNotifications(!state.notify)
+                }
+            )
+        }
 
-        Switch(
-            checked = isEnabled,
-            onCheckedChange = { isEnabled = it }
-        )
+        Button(
+            onClick = {
+                settingsVM.saveSettings(state.darkMode, state.notify)
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Save", style = MaterialTheme.typography.labelLarge.copy(
+                fontSize = 24.sp,
+            ))
+        }
 
-        Button(modifier = Modifier.fillMaxWidth(),
+        Button(
+            onClick = {
+                settingsVM.resetSettings()
+            },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error)
+        ) {
+            Text("Reset", style = MaterialTheme.typography.labelLarge.copy(
+                fontSize = 24.sp,
+            ))
+        }
+
+        Button(
+            modifier = Modifier.fillMaxWidth(),
             onClick = {
                 //if the bottom sheet is not already visible then show it
                 if (!sheetState.isVisible) {
                     showBottomSheet = true //show the bottom sheet
-                }else{
+                } else {
                     showBottomSheet = false
                 }
             }) {
@@ -96,7 +149,7 @@ fun SettingsScreen(
                     title = "App Information",
                     message = "App Name: PickApp\n" +
                             "Developer Name: Group1\n" +
-                            "App Version: 0.03"
+                            "App Version: 0.04"
                 )//BottomSheetContent
             }//ModalBottomSheet
         }//if
