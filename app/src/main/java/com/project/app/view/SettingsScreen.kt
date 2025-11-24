@@ -61,7 +61,7 @@ fun SettingsScreen(
 
         Text("Settings",
             style = MaterialTheme.typography.titleLarge.copy(
-                fontSize = 36.sp
+                fontSize = 32.sp
             )
         )
 

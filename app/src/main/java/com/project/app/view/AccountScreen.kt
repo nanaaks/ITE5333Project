@@ -20,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.project.app.viewmodel.UserViewModel
@@ -39,11 +41,22 @@ fun AccountScreen(
     userVM: UserViewModel
 ) {
     val userState by userVM.user.collectAsState()
+    val state by userVM.userData.collectAsState()
 
     var name by remember { mutableStateOf(userState.name ?: "") }
     var email by remember { mutableStateOf(userState.email) }
     var phone by remember { mutableStateOf(userState.phone) }
     var password by remember { mutableStateOf(userState.password) }
+    var home by remember { mutableStateOf(state.homeAddress) }
+    var work by remember { mutableStateOf(state.workAddress) }
+    var school by remember { mutableStateOf(state.schoolAddress) }
+
+    //set the existing data to the UI variables
+    LaunchedEffect(state) {
+        home = state.homeAddress
+        work = state.workAddress
+        school = state.schoolAddress
+    }
 
     Scaffold(
         topBar = {
@@ -103,9 +116,44 @@ fun AccountScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            Text("Saved Addresses",
+                style = MaterialTheme.typography.labelLarge.copy(
+                    fontSize = 24.sp,
+                ))
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = home,
+                onValueChange = { home = it},
+                label = { Text("Home Address") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = work,
+                onValueChange = { work = it },
+                label = { Text("Work Address") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = school,
+                onValueChange = { school = it },
+                label = { Text("School Address") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
             Button(
                 onClick = {
                     userVM.updateUserDetails(name, email, phone, password)
+                    userVM.savePrefs(home, work, school)
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)

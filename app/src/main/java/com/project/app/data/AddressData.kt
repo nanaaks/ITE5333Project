@@ -1,6 +1,9 @@
 package com.project.app.data
 
-data class Address(val street: String, val city: String) {
+data class Address(
+    val street: String,
+    val city: String
+) {
     override fun toString(): String = "$street, $city"
 }
 

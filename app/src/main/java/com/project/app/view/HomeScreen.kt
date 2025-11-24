@@ -79,8 +79,8 @@ fun HomeScreen (
                 CenterAlignedTopAppBar(
                     title = { Text("PickApp") },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.DarkGray,
-                        titleContentColor = Color.White
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                     ),
                     actions = {
                         IconButton(onClick = {

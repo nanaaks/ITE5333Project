@@ -16,10 +16,12 @@ import com.project.app.ui.theme.AppTheme
 import androidx.navigation.compose.rememberNavController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.project.app.data.SettingsRepository
+import com.project.app.data.UserRepository
 import com.project.app.nav.AppNavGraph
 import com.project.app.viewmodel.SettingsViewModel
 import com.project.app.viewmodel.SettingsViewModelFactory
 import com.project.app.viewmodel.UserViewModel
+import com.project.app.viewmodel.UserViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,10 +29,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val settingsRepository = SettingsRepository(this)
+        val userRepository = UserRepository(this)
 
         setContent {
             AppRoot(
-                settingsRepository = settingsRepository
+                settingsRepository = settingsRepository,
+                userRepository = userRepository
             )
         }
     }
@@ -38,7 +42,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AppRoot(
-    settingsRepository: SettingsRepository
+    settingsRepository: SettingsRepository,
+    userRepository: UserRepository
 ) {
     val settingsVM: SettingsViewModel = viewModel(
         factory = SettingsViewModelFactory(settingsRepository)
@@ -46,7 +51,11 @@ fun AppRoot(
 
     val settingsState by settingsVM.settingsData.collectAsState()
 
-    val userVM : UserViewModel = viewModel()
+    val userVM: UserViewModel = viewModel(
+        factory = UserViewModelFactory(userRepository)
+    )
+
+    //val userState by userVM.userData.collectAsState()
 
     AppTheme(darkTheme = settingsState.darkMode) {
         val navHostController = rememberNavController()

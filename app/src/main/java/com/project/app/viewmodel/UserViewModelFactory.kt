@@ -2,16 +2,16 @@ package com.project.app.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.project.app.data.SettingsRepository
+import com.project.app.data.UserRepository
 
-class SettingsViewModelFactory(
-    private val settingsRepository: SettingsRepository
+class UserViewModelFactory(
+    private val userRepository: UserRepository
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
 
-        if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
-            return SettingsViewModel(settingsRepository) as T
+        if (modelClass.isAssignableFrom(UserViewModel::class.java)) {
+            return UserViewModel(userRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

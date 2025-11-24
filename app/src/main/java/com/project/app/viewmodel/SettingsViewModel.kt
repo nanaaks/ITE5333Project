@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(
-    private val settingsRepo: SettingsRepository
+    private val settingsRepository: SettingsRepository
 ): ViewModel() {
 
     private val _settingsData = MutableStateFlow(SettingsRepository.SettingsState())
@@ -17,19 +17,19 @@ class SettingsViewModel(
 
     init {
         viewModelScope.launch {
-            settingsRepo.settingsFlow.collectLatest { _settingsData.value = it }
+            settingsRepository.settingsFlow.collectLatest { _settingsData.value = it }
         }
     }
 
     fun enableDarkMode(enabled: Boolean) {
         viewModelScope.launch {
-            settingsRepo.enableDarkMode(enabled)
+            settingsRepository.enableDarkMode(enabled)
         }
     }
 
     fun enableNotifications(enabled: Boolean) {
         viewModelScope.launch {
-            settingsRepo.enableNotifications(enabled)
+            settingsRepository.enableNotifications(enabled)
         }
     }
 
@@ -37,10 +37,10 @@ class SettingsViewModel(
         darkMode: Boolean,
         notify: Boolean
     ) {
-        viewModelScope.launch { settingsRepo.saveSettings(darkMode, notify) }
+        viewModelScope.launch { settingsRepository.saveSettings(darkMode, notify) }
     }
 
     fun resetSettings() {
-        viewModelScope.launch { settingsRepo.resetSettings() }
+        viewModelScope.launch { settingsRepository.resetSettings() }
     }
 }
