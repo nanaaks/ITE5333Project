@@ -10,7 +10,9 @@ import com.project.app.model.RideOption
 import java.util.UUID
 import kotlin.random.Random
 
-class RideViewModel : ViewModel() {
+class RideViewModel(
+    private val rideRepository: RideRepository
+) : ViewModel() {
 
 //    Address Management
     val allAddresses = mutableStateOf(dummyAddresses.toMutableList())
