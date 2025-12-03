@@ -132,7 +132,7 @@ fun SignUpScreen(
                         errorMessage = "Please fill all fields correctly."
                     } else {
                         val success = userVM.registerUser(
-                            User(name, email, password, phone, payment)
+                            User(userId = 0, name, email, password, phone, payment)
                         )
                         if (success) {
                             navHostController.navigate(Routes.Tabs.routeName)

@@ -1,4 +1,7 @@
 package com.project.app.data
 
-class UserDao {
+import androidx.room.Dao
+
+@Dao
+interface UserDao {
 }

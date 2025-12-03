@@ -1,4 +1,7 @@
 package com.project.app.data
 
-class RideDao {
+import androidx.room.Dao
+
+@Dao
+interface RideDao {
 }
