@@ -30,8 +30,8 @@ fun ResultScreen(navHostController: NavController) {
             CenterAlignedTopAppBar(
                 title = { Text("Booking Result") },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.DarkGray,
-                    titleContentColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             )
         }
@@ -46,18 +46,19 @@ fun ResultScreen(navHostController: NavController) {
         ) {
             Text(
                 "Your ride has been booked successfully!",
-                color = Color(0xFF2E7D32),
+                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.headlineSmall
             )
-
             Spacer(modifier = Modifier.height(20.dp))
-
             Button(
                 onClick = { navHostController.popBackStack() },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
             ) {
-                Text("Back to Home", color = Color.White)
+                Text("Back to Home", style = MaterialTheme.typography.bodyLarge)
             }
         }
     }
