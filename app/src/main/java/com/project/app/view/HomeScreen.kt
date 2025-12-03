@@ -87,7 +87,7 @@ fun HomeScreen (
                             Icon(
                                 Icons.Filled.MoreVert,
                                 contentDescription = "Options",
-                                tint = Color.White
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
                             )
                         }//IconButton
                         DropdownMenu(
