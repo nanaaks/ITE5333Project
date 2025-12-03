@@ -72,20 +72,18 @@ fun RideScreen(
             CenterAlignedTopAppBar(
                 title = { Text("Book a Ride") },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF1E1E1E),
-                    titleContentColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             )
         }
     ) { innerPadding ->
-
         LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-
             /** PICKUP ADDRESS **/
             item {
                 Text("Pickup Address", fontWeight = FontWeight.Bold)
@@ -129,10 +127,11 @@ fun RideScreen(
                         onClick = { rideViewModel.selectedRide.value = option },
                         modifier = Modifier.fillMaxWidth(),
                         colors = ButtonDefaults.outlinedButtonColors(
-                            containerColor = if (selected) Color(0xFFBBDEFB) else Color.Transparent
+                            containerColor = if (selected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     ) {
-                        Text("${option.name} - Base $${option.baseFare}")
+                        Text("${option.name} - Base $${option.baseFare}", style = MaterialTheme.typography.bodyLarge)
                     }
                 }
             }
@@ -186,21 +185,23 @@ fun RideScreen(
                 Button(
                     onClick = { rideViewModel.calculateFare() },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E1E1E))
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary)
                 ) {
-                    Text("Calculate Fare", color = Color.White)
+                    Text("Calculate Fare", style = MaterialTheme.typography.bodyLarge)
                 }
 
                 if (rideViewModel.fare.value > 0) {
                     Text(
                         text = "Fare: $${"%.2f".format(rideViewModel.fare.value)} | ETA: ${rideViewModel.eta.value}",
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF2E7D32),
+                        color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(top = 4.dp)
                     )
 
                     if (rideViewModel.discountApplied.value)
-                        Text("Promo Applied!", color = Color.Blue)
+                        Text("Promo Applied!", color = MaterialTheme.colorScheme.secondary)
                 }
             }
 
@@ -215,9 +216,11 @@ fun RideScreen(
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E7D32))
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary)
                 ) {
-                    Text("Book Ride", color = Color.White)
+                    Text("Book Ride", style = MaterialTheme.typography.bodyLarge)
                 }
             }
         }
@@ -240,6 +243,7 @@ fun RideScreen(
                         value = city,
                         onValueChange = { city = it },
                         label = { Text("City") },
+                        textStyle = MaterialTheme.typography.bodyLarge,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                     )
                 }
