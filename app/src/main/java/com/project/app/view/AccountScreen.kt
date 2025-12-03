@@ -38,7 +38,9 @@ import com.project.app.viewmodel.UserViewModel
 
 @Composable
 fun AccountScreen(
-    userVM: UserViewModel
+    navHostController: NavHostController,
+    userVM: UserViewModel,
+    userId: Int
 ) {
     val userState by userVM.user.collectAsState()
     val state by userVM.userData.collectAsState()

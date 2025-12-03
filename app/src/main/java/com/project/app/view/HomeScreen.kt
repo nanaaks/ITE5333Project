@@ -104,7 +104,7 @@ fun HomeScreen (
                                 },
                                 onClick = {
                                     showMenu = false
-                                    navHostController.navigate(Routes.Account.routeName)
+                                    navHostController.navigate("account/${user.userId}")
                                 }
                             )//DropdownMenuItem
 

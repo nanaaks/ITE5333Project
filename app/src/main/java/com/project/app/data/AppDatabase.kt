@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 
 @Database(
     entities = [User::class, Ride::class],
-    version = 2
+    version = 3
 )
 abstract class AppDatabase: RoomDatabase() {
 
@@ -28,7 +28,7 @@ abstract class AppDatabase: RoomDatabase() {
                     .databaseBuilder(
                         context.applicationContext,
                         AppDatabase::class.java,
-                        "Project_DB"
+                        "pickapp-db"
                     )
                     .fallbackToDestructiveMigration(true)
                     .addCallback(AppDatabaseCallback(scope))

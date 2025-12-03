@@ -10,7 +10,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
-import androidx.room.Room
 import com.project.app.data.AppDatabase
 import com.project.app.data.RideRepository
 import com.project.app.data.SettingsRepository
@@ -23,22 +22,27 @@ import com.project.app.viewmodel.SettingsViewModel
 import com.project.app.viewmodel.SettingsViewModelFactory
 import com.project.app.viewmodel.UserViewModel
 import com.project.app.viewmodel.UserViewModelFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // Build Room database
-        val db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            "pickapp-db"
-        )
-            .fallbackToDestructiveMigration()
-            .build()
+        val db : AppDatabase by lazy {
+            val scope = CoroutineScope(SupervisorJob())
+            AppDatabase.getDatabase(this, scope)
+        }
 
-        val settingsRepository = SettingsRepository(this)
+//        // Build Room database
+//        val db = Room.databaseBuilder(
+//            applicationContext,
+//            AppDatabase::class.java,
+//            "pickapp-db"
+//        )
+//            .fallbackToDestructiveMigration()
+//            .build()
 
         // Pass DAO into UserRepository
         val userRepository = UserRepository(
@@ -46,10 +50,15 @@ class MainActivity : ComponentActivity() {
             userDao = db.userDao()
         )
 
+        val settingsRepository = SettingsRepository(this)
+
+        val rideRepository = RideRepository(db.rideDao())
+
         setContent {
             AppRoot(
                 settingsRepository = settingsRepository,
-                userRepository = userRepository
+                userRepository = userRepository,
+                rideRepository = rideRepository
             )
         }
     }
@@ -57,16 +66,21 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppRoot(
     settingsRepository: SettingsRepository,
-    userRepository: UserRepository
+    userRepository: UserRepository,
+    rideRepository: RideRepository
 ) {
+    val userVM: UserViewModel = viewModel(
+        factory = UserViewModelFactory(userRepository)
+    )
+
     val settingsVM: SettingsViewModel = viewModel(
         factory = SettingsViewModelFactory(settingsRepository)
     )
 
     val settingsState by settingsVM.settingsData.collectAsState()
 
-    val userVM: UserViewModel = viewModel(
-        factory = UserViewModelFactory(userRepository)
+    val rideVM : RideViewModel = viewModel(
+        factory = RideViewModelFactory(rideRepository)
     )
     val rideVM: RideViewModel = viewModel(
         factory = RideViewModelFactory(RideRepository)

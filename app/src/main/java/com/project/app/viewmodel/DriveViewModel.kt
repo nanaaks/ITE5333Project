@@ -1,6 +1,7 @@
 package com.project.app.viewmodel
 
 import androidx.lifecycle.ViewModel
+import com.project.app.data.BookingRepository
 import com.project.app.model.Booking
 import com.project.app.data.RideRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,14 +15,14 @@ class DriveViewModel : ViewModel() {
         refreshJobs()
     }
     fun acceptJob(id: String) {
-        RideRepository.updateJobStatus(id, "Accepted")
+        BookingRepository.updateJobStatus(id, "Accepted")
         refreshJobs()
     }
     fun declineJob(id: String) {
-        RideRepository.updateJobStatus(id, "Declined")
+        BookingRepository.updateJobStatus(id, "Declined")
         refreshJobs()
     }
     fun refreshJobs() {
-        _jobs.value = RideRepository.getAllBookings()
+        _jobs.value = BookingRepository.getAllBookings()
     }
 }

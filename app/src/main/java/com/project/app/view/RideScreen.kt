@@ -36,6 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,6 +51,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.project.app.model.Ride
 import com.project.app.nav.Routes
 import com.project.app.viewmodel.DriveViewModel
 import com.project.app.viewmodel.RideViewModel
@@ -60,9 +62,13 @@ import com.project.app.viewmodel.UserViewModel
 fun RideScreen(
     navController: NavController,
     driveVM: DriveViewModel,
-    rideViewModel: RideViewModel,
-    userName: String = "User"
+    rideVM : RideViewModel,
+    //userVM : UserViewModel,
+    userName: String = "User", //Replace with real userName from UserViewModel
+    userId : Int
 ) {
+    //val users : List<User> by userVM.allUsers.collectAsState(initial = emptyList())
+
     var showAddAddressDialog by remember { mutableStateOf(false) }
     var street by remember { mutableStateOf("") }
     var city by remember { mutableStateOf("") }
@@ -90,9 +96,9 @@ fun RideScreen(
 
                 AddressDropdown(
                     label = "Select Pickup",
-                    selectedAddress = rideViewModel.pickup.value,
-                    addresses = rideViewModel.allAddresses.value,
-                    onAddressSelected = { rideViewModel.pickup.value = it }
+                    selectedAddress = rideVM.pickup.value,
+                    addresses = rideVM.allAddresses.value,
+                    onAddressSelected = { rideVM.pickup.value = it }
                 )
 
                 TextButton(
@@ -111,9 +117,9 @@ fun RideScreen(
 
                 AddressDropdown(
                     label = "Select Destination",
-                    selectedAddress = rideViewModel.destination.value,
-                    addresses = rideViewModel.allAddresses.value,
-                    onAddressSelected = { rideViewModel.destination.value = it }
+                    selectedAddress = rideVM.destination.value,
+                    addresses = rideVM.allAddresses.value,
+                    onAddressSelected = { rideVM.destination.value = it }
                 )
             }
 
@@ -121,10 +127,10 @@ fun RideScreen(
             item {
                 Text("Ride Options", fontWeight = FontWeight.Bold)
 
-                rideViewModel.rideOptions.forEach { option ->
-                    val selected = rideViewModel.selectedRide.value == option
+                rideVM.rideOptions.forEach { option ->
+                    val selected = rideVM.selectedRide.value == option
                     OutlinedButton(
-                        onClick = { rideViewModel.selectedRide.value = option },
+                        onClick = { rideVM.selectedRide.value = option },
                         modifier = Modifier.fillMaxWidth(),
                         colors = ButtonDefaults.outlinedButtonColors(
                             containerColor = if (selected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent,
@@ -139,8 +145,8 @@ fun RideScreen(
             /** PROMO & PAYMENT **/
             item {
                 OutlinedTextField(
-                    value = rideViewModel.promoCode.value,
-                    onValueChange = { rideViewModel.promoCode.value = it },
+                    value = rideVM.promoCode.value,
+                    onValueChange = { rideVM.promoCode.value = it },
                     label = { Text("Promo Code (SAVE10, WELCOME, RIDE5)") },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -153,7 +159,7 @@ fun RideScreen(
                     onExpandedChange = { expanded = !expanded }
                 ) {
                     OutlinedTextField(
-                        value = rideViewModel.paymentMethod.value,
+                        value = rideVM.paymentMethod.value,
                         onValueChange = {},
                         readOnly = true,
                         label = { Text("Payment Method") },
@@ -171,7 +177,7 @@ fun RideScreen(
                             DropdownMenuItem(
                                 text = { Text(method) },
                                 onClick = {
-                                    rideViewModel.paymentMethod.value = method
+                                    rideVM.paymentMethod.value = method
                                     expanded = false
                                 }
                             )
@@ -183,7 +189,7 @@ fun RideScreen(
             /** CALCULATE FARE **/
             item {
                 Button(
-                    onClick = { rideViewModel.calculateFare() },
+                    onClick = { rideVM.calculateFare() },
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
@@ -192,15 +198,15 @@ fun RideScreen(
                     Text("Calculate Fare", style = MaterialTheme.typography.bodyLarge)
                 }
 
-                if (rideViewModel.fare.value > 0) {
+                if (rideVM.fare.value > 0) {
                     Text(
-                        text = "Fare: $${"%.2f".format(rideViewModel.fare.value)} | ETA: ${rideViewModel.eta.value}",
+                        text = "Fare: $${"%.2f".format(rideVM.fare.value)} | ETA: ${rideVM.eta.value}",
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(top = 4.dp)
                     )
 
-                    if (rideViewModel.discountApplied.value)
+                    if (rideVM.discountApplied.value)
                         Text("Promo Applied!", color = MaterialTheme.colorScheme.secondary)
                 }
             }
@@ -209,10 +215,24 @@ fun RideScreen(
             item {
                 Button(
                     onClick = {
-                        if (rideViewModel.pickup.value != null && rideViewModel.destination.value != null) {
-                            rideViewModel.bookRide(userName= userName)
+                        if (rideVM.pickup.value != null && rideVM.destination.value != null) {
+                            rideVM.bookRide(userName= userName)
                             driveVM.refreshJobs()
+                            // TODO - Use AlertDialog to display confirmation instead of separate screen
                             navController.navigate(Routes.Result.routeName)
+                            /*
+                            val newRide = Ride(
+                                startAddress = rideViewModel.pickup.value,
+                                endAddress = rideViewModel.destination.value,
+                                price = rideViewModel.fare.value,
+                                dateTime = LocalDateTime.now(),
+                                status = "Pending",
+                                id = id
+                            )
+                            rideVM.insertRide(newRide)
+
+                            navController.popBackStack()
+                             */
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
@@ -251,7 +271,7 @@ fun RideScreen(
             confirmButton = {
                 TextButton(onClick = {
                     if (street.isNotBlank() && city.isNotBlank()) {
-                        rideViewModel.addAddress(street, city)
+                        rideVM.addAddress(street, city)
                         street = ""
                         city = ""
                         showAddAddressDialog = false

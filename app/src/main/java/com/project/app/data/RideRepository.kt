@@ -1,25 +1,15 @@
 package com.project.app.data
 
-import com.project.app.model.Booking
+import com.project.app.model.Ride
+import kotlinx.coroutines.flow.Flow
 
-object RideRepository {
-    private val bookings = mutableListOf<Booking>()
+class RideRepository(private val rideDao: RideDao) {
 
-    // add a new booking
-    fun addBooking(booking: Booking) {
-        bookings.add(booking)
-    }
+    fun getAllRides(userId: Int) : Flow<List<Ride>> = rideDao.getRidesForUser(userId)
 
-    fun getPendingJobs(): List<Booking> = bookings.filter { it.status == "Pending" }.toList()
+    suspend fun insert(ride: Ride) = rideDao.insertRide(ride)
 
-    // update booking status
-    fun updateJobStatus(id: String, newStatus: String) {
-        val idx = bookings.indexOfFirst { it.id == id }
-        if (idx != -1) {
-            val old = bookings[idx]
-            val updated = old.copy(status = newStatus)
-            bookings[idx] = updated
-        }
-    }
-    fun getAllBookings(): List<Booking> = bookings.toList()
+    suspend fun update(ride: Ride) = rideDao.updateRide(ride)
+
+    suspend fun  delete(ride: Ride) = rideDao.deleteRide(ride)
 }

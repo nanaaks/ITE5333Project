@@ -41,13 +41,9 @@ fun AppNavGraph(
                 navHostController,
                 tabNavController,
                 userVM,
-                driveVM,
-                rideVM
+                rideVM,
+                driveVM
             )
-        }
-
-        composable(Routes.Account.routeName) {
-            AccountScreen(userVM)
         }
 
         composable(Routes.Result.routeName) {
@@ -58,15 +54,29 @@ fun AppNavGraph(
             SettingsScreen(
                 settingsVM = settingsVM
             )
-
         }
-        composable(Routes.Ride.routeName) {
-            RideScreen(
-                navController = navHostController,
-                driveVM = driveVM,
-                rideViewModel = rideVM,
-                userName = userVM.user.value.name ?: "User"
-            )
+
+        composable("account/{userId}") { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId")?.toIntOrNull()
+
+            userId?.let {
+                AccountScreen(
+                    navHostController,
+                    userVM,
+                    userId
+                )
+            }
+        }
+
+        composable("updateRide/{rideId}/{userId}") {backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId")?.toIntOrNull()
+
+            userId?.let {
+                val subId = backStackEntry.arguments?.getString("subId")?.toIntOrNull()
+                subId?.let {
+                    UpdateRideScreen(navHostController, rideVM, userId, rideId = it)
+                }
+            }
         }
     }
 }

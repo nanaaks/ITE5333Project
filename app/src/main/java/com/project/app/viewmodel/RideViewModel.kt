@@ -2,17 +2,113 @@ package com.project.app.viewmodel
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.project.app.data.Address
+import com.project.app.data.BookingRepository
 import com.project.app.data.RideRepository
 import com.project.app.data.dummyAddresses
 import com.project.app.model.Booking
+import com.project.app.model.Ride
 import com.project.app.model.RideOption
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.util.UUID
 import kotlin.random.Random
 
 class RideViewModel(
     private val rideRepository: RideRepository
 ) : ViewModel() {
+
+    private val _searchQuery = MutableStateFlow<String>("")
+    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+    private val _allRides = MutableStateFlow<List<Ride>>(emptyList())
+
+    val allRides: StateFlow<List<Ride>> = combine(_allRides, _searchQuery){ list, query ->
+        if (query.isBlank()) list
+        else list.filter { it.endAddress.contains(query, ignoreCase = true) }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = _allRides.value
+    )
+
+    private val _operationStatus = MutableStateFlow<String?>(null)
+    val operationStatus: StateFlow<String?> = _operationStatus.asStateFlow()
+
+    fun updateSearch(query : String){
+        _searchQuery.value = query
+    }
+
+    fun getAllRides(userId: Int) =  viewModelScope.launch {
+        try {
+            rideRepository.getAllRides(userId).collect{ _allRides.value = it }
+        } catch (e: Exception) {
+            _operationStatus.value = "Failed to fetch ride history: ${e.message}"
+        }
+    }
+
+    fun insertRide(ride: Ride) = viewModelScope.launch {
+        try {
+            rideRepository.insert(ride)
+            _operationStatus.value = "Booking confirmed"
+        } catch (e: Exception) {
+            _operationStatus.value = "Failed to add booking: ${e.message}"
+        }
+    }
+
+    fun updateRide(ride: Ride) = viewModelScope.launch {
+        try {
+            rideRepository.update(ride)
+            _operationStatus.value = "Booking rescheduled successfully"
+        } catch (e: Exception) {
+            _operationStatus.value = "Failed to update booking: ${e.message}"
+        }
+    }
+
+    fun deleteRide(ride: Ride) = viewModelScope.launch {
+        try {
+            rideRepository.delete(ride)
+            _operationStatus.value = "Ride deleted"
+        } catch (e: Exception) {
+            _operationStatus.value = "Failed to delete ride: ${e.message}"
+        }
+    }
+
+    fun deleteAllRides(userId: Int) =  viewModelScope.launch {
+        try {
+            //rideRepository.getAllRides(userId).collect{ _allRides.value = it }
+            _operationStatus.value = "Ride history deleted"
+        } catch (e: Exception) {
+            _operationStatus.value = "Failed to delete ride history: ${e.message}"
+        }
+    }
+
+    fun sortRidesByDate() = viewModelScope.launch {
+        try {
+            _allRides.value = _allRides.value.sortedBy { it.dateTime }
+        } catch (e: Exception) {
+            _operationStatus.value = "Failed to sort ride history: ${e.message}"
+        }
+    }
+
+    fun sortRidesByPrice() = viewModelScope.launch {
+        try {
+            _allRides.value = _allRides.value.sortedBy { it.price }
+        } catch (e: Exception) {
+            _operationStatus.value = "Failed to sort ride history: ${e.message}"
+        }
+    }
+
+    fun clearOperationStatus() {
+        _operationStatus.value = null
+    }
+
+    /////////////////////////////////////////////////////////////////////////
 
 //    Address Management
     val allAddresses = mutableStateOf(dummyAddresses.toMutableList())
@@ -92,7 +188,7 @@ class RideViewModel(
             status = "Pending",
             rideOption = selectedRide.value?.name ?: rideOptions.first().name
         )
-        RideRepository.addBooking(booking)
+        BookingRepository.addBooking(booking)
     }
 }
 
