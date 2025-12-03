@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +33,7 @@ import androidx.navigation.NavController
 import com.project.app.model.User
 import com.project.app.nav.Routes
 import com.project.app.viewmodel.UserViewModel
+import kotlinx.coroutines.launch
 
 @OptIn( ExperimentalMaterial3Api::class,
     ExperimentalMaterial3Api::class
@@ -48,6 +50,7 @@ fun SignUpScreen(
     var password by remember { mutableStateOf("") }
     var payment by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         topBar = { TopAppBar(title = { Text("Sign Up") },
@@ -131,25 +134,17 @@ fun SignUpScreen(
                     if (name.isBlank() || email.isBlank() || password.length < 6) {
                         errorMessage = "Please fill all fields correctly."
                     } else {
-//                        val success = userVM.registerUser(
-//                            User(name, email, password, phone, payment)
-//                        )
-//                        if (success) {
-//                            navHostController.navigate(Routes.Tabs.routeName)
-//                        } else errorMessage = "Email already registered."
-                        userVM.registerUser(
-                            User(
-                                name = name,
-                                email = email,
-                                password = password,
-                                phone = phone,
-                                payment = payment
+                        navHostController.context
+                        scope.launch {
+                            val success = userVM.registerUser(
+                                User(name = name, email = email, password = password, phone = phone, payment =  payment)
                             )
-                        ) { success ->
-                            if (success) navHostController.navigate(Routes.Tabs.routeName)
-                            else errorMessage = "Email already registered."
+                            if (success) {
+                                navHostController.navigate(Routes.Tabs.routeName)
+                            } else {
+                                errorMessage = "Email already registered."
+                            }
                         }
-
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),

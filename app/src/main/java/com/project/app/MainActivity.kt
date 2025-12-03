@@ -12,10 +12,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.project.app.data.AppDatabase
+import com.project.app.data.RideRepository
 import com.project.app.data.SettingsRepository
 import com.project.app.data.UserRepository
 import com.project.app.ui.theme.AppTheme
 import com.project.app.nav.AppNavGraph
+import com.project.app.viewmodel.RideViewModel
+import com.project.app.viewmodel.RideViewModelFactory
 import com.project.app.viewmodel.SettingsViewModel
 import com.project.app.viewmodel.SettingsViewModelFactory
 import com.project.app.viewmodel.UserViewModel
@@ -65,6 +68,10 @@ fun AppRoot(
     val userVM: UserViewModel = viewModel(
         factory = UserViewModelFactory(userRepository)
     )
+    val rideVM: RideViewModel = viewModel(
+        factory = RideViewModelFactory(RideRepository)
+    )
+
 
     AppTheme(darkTheme = settingsState.darkMode) {
         val navHostController = rememberNavController()
@@ -73,7 +80,8 @@ fun AppRoot(
             AppNavGraph(
                 navHostController,
                 userVM,
-                settingsVM
+                settingsVM,
+                rideVM
             )
         }
     }

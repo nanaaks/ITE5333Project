@@ -16,6 +16,8 @@ sealed class Routes(val routeName: String) {
     object Account : Routes("account")
     object Settings : Routes("settings")
     object Result : Routes("result")
+    object Ride : Routes("ride")
+
 }
 
 sealed class TabRoutes(

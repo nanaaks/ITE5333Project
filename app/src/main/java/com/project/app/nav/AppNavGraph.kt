@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.project.app.data.SettingsRepository
 import com.project.app.view.*
 import com.project.app.viewmodel.DriveViewModel
+import com.project.app.viewmodel.RideViewModel
 import com.project.app.viewmodel.SettingsViewModel
 import com.project.app.viewmodel.UserViewModel
 
@@ -17,7 +18,8 @@ import com.project.app.viewmodel.UserViewModel
 fun AppNavGraph(
     navHostController: NavHostController,
     userVM: UserViewModel,
-    settingsVM: SettingsViewModel
+    settingsVM: SettingsViewModel,
+    rideVM: RideViewModel
 ) {
     val tabNavController = rememberNavController()
     val driveVM: DriveViewModel = viewModel()
@@ -39,7 +41,8 @@ fun AppNavGraph(
                 navHostController,
                 tabNavController,
                 userVM,
-                driveVM
+                driveVM,
+                rideVM
             )
         }
 
@@ -54,6 +57,15 @@ fun AppNavGraph(
         composable(Routes.Settings.routeName) {
             SettingsScreen(
                 settingsVM = settingsVM
+            )
+
+        }
+        composable(Routes.Ride.routeName) {
+            RideScreen(
+                navController = navHostController,
+                driveVM = driveVM,
+                rideViewModel = rideVM,
+                userName = userVM.user.value.name ?: "User"
             )
         }
     }

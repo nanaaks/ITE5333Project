@@ -25,27 +25,12 @@ class UserViewModel(
     private val _user = MutableStateFlow(User())
     val user: StateFlow<User> = _user
 
-    private val registeredUsers = mutableListOf<User>()
-
-//    fun registerUser(newUser: User): Boolean {
-//        // simple validation: no duplicate emails
-//        if (registeredUsers.any { it.email == newUser.email }) return false
-//        registeredUsers.add(newUser)
-//        _user.value = newUser
-//        return true
-//    }
-//
-//    fun login(email: String, password: String): User? {
-//        val found = registeredUsers.find { it.email == email && it.password == password }
-//        if (found != null) _user.value = found
-//        return found
-//    }
-
-    fun registerUser(newUser: User, onResult: (Boolean) -> Unit) {
-        viewModelScope.launch {
-            val success = userRepository.registerUser(newUser)
-            onResult(success)
+    suspend fun registerUser(newUser: User): Boolean {
+        val success = userRepository.registerUser(newUser)
+        if (success) {
+            _user.value = newUser
         }
+        return success
     }
 
     fun login(email: String, password: String, onResult: (User?) -> Unit) {

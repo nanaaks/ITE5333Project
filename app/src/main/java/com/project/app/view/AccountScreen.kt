@@ -43,7 +43,7 @@ fun AccountScreen(
     val userState by userVM.user.collectAsState()
     val state by userVM.userData.collectAsState()
 
-    var name by remember { mutableStateOf(userState.name ?: "") }
+    var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf(userState.email) }
     var phone by remember { mutableStateOf(userState.phone) }
     var password by remember { mutableStateOf(userState.password) }
@@ -51,6 +51,12 @@ fun AccountScreen(
     var work by remember { mutableStateOf(state.workAddress) }
     var school by remember { mutableStateOf(state.schoolAddress) }
 
+    LaunchedEffect(userState) {
+        name = userState.name
+        email = userState.email
+        phone = userState.phone
+        password = userState.password
+    }
     //set the existing data to the UI variables
     LaunchedEffect(state) {
         home = state.homeAddress

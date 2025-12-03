@@ -60,8 +60,8 @@ import com.project.app.viewmodel.UserViewModel
 fun RideScreen(
     navController: NavController,
     driveVM: DriveViewModel,
-    rideViewModel: RideViewModel = viewModel(),
-    userName: String = "User" //Replace with real userName from UserViewModel
+    rideViewModel: RideViewModel,
+    userName: String = "User"
 ) {
     var showAddAddressDialog by remember { mutableStateOf(false) }
     var street by remember { mutableStateOf("") }

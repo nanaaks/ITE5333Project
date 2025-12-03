@@ -119,7 +119,7 @@ fun SignInScreen(
 //                        }
                         userVM.login(email, password) { user ->
                             if (user != null) {
-                                navHostController.navigate(Routes.Home.routeName) {
+                                navHostController.navigate(Routes.Tabs.routeName) {
                                     popUpTo(0) { inclusive = true }
                                 }
                             } else {

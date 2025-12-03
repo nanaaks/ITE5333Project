@@ -21,6 +21,7 @@ import com.project.app.view.RideScreen
 import com.project.app.view.DriveScreen
 import com.project.app.view.HomeScreen
 import com.project.app.viewmodel.DriveViewModel
+import com.project.app.viewmodel.RideViewModel
 import com.project.app.viewmodel.UserViewModel
 
 @Composable
@@ -28,7 +29,8 @@ fun TabNavGraph(
     navHostController: NavHostController,
     tabNavController: NavHostController,
     userVM : UserViewModel,
-    driveVM : DriveViewModel
+    driveVM : DriveViewModel,
+    rideVM : RideViewModel
 ) {
     val screens = listOf(TabRoutes.Home, TabRoutes.Ride, TabRoutes.Drive)
     val navBackStackEntry by tabNavController.currentBackStackEntryAsState()
@@ -88,8 +90,14 @@ fun TabNavGraph(
             }
 
             composable(TabRoutes.Ride.routeName) {
-                RideScreen(navHostController, driveVM)
+                RideScreen(
+                    navController = navHostController,
+                    driveVM = driveVM,
+                    rideViewModel = rideVM,
+                    userName = userVM.user.value.name
+                )
             }
+
 
             composable(TabRoutes.Drive.routeName) {
                 DriveScreen(navHostController, driveVM)
