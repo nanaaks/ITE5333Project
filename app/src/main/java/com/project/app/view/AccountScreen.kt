@@ -81,6 +81,7 @@ fun AccountScreen(
                 value = name,
                 onValueChange = { name = it },
                 label = { Text("Name") },
+                textStyle = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -90,6 +91,7 @@ fun AccountScreen(
                 value = email,
                 onValueChange = { email = it },
                 label = { Text("Email") },
+                textStyle = MaterialTheme.typography.bodyLarge,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -100,6 +102,7 @@ fun AccountScreen(
                 value = phone,
                 onValueChange = { phone = it },
                 label = { Text("Phone Number") },
+                textStyle = MaterialTheme.typography.bodyLarge,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -110,6 +113,7 @@ fun AccountScreen(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Password") },
+                textStyle = MaterialTheme.typography.bodyLarge,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -127,6 +131,7 @@ fun AccountScreen(
                 value = home,
                 onValueChange = { home = it},
                 label = { Text("Home Address") },
+                textStyle = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -136,6 +141,7 @@ fun AccountScreen(
                 value = work,
                 onValueChange = { work = it },
                 label = { Text("Work Address") },
+                textStyle = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -145,6 +151,7 @@ fun AccountScreen(
                 value = school,
                 onValueChange = { school = it },
                 label = { Text("School Address") },
+                textStyle = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -156,9 +163,11 @@ fun AccountScreen(
                     userVM.savePrefs(home, work, school)
                 },
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary)
             ) {
-                Text("Save Changes", color = MaterialTheme.colorScheme.onPrimary)
+                Text("Save Changes", style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onPrimary)
             }
         }
     }
