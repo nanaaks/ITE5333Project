@@ -64,7 +64,6 @@ fun SettingsScreen(
                 fontSize = 32.sp
             )
         )
-
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -81,7 +80,6 @@ fun SettingsScreen(
                 }
             )
         }
-
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -98,30 +96,30 @@ fun SettingsScreen(
                 }
             )
         }
-
         Button(
             onClick = {
                 settingsVM.saveSettings(state.darkMode, state.notify)
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
         ) {
-            Text("Save", style = MaterialTheme.typography.labelLarge.copy(
-                fontSize = 24.sp,
-            ))
+            Text("Save", style = MaterialTheme.typography.labelLarge.copy(fontSize = 24.sp,))
         }
-
         Button(
             onClick = {
                 settingsVM.resetSettings()
             },
             modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error)
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.error,
+                contentColor = MaterialTheme.colorScheme.onError
+            )
         ) {
-            Text("Reset", style = MaterialTheme.typography.labelLarge.copy(
-                fontSize = 24.sp,
-            ))
+            Text("Reset", style = MaterialTheme.typography.labelLarge.copy(fontSize = 24.sp,))
         }
-
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
@@ -136,14 +134,11 @@ fun SettingsScreen(
         }//Button
 
         Spacer(modifier = Modifier.height(16.dp))
-
         if (showBottomSheet){
-
             ModalBottomSheet(
                 onDismissRequest = { showBottomSheet = false },
                 sheetState = sheetState
             ) {
-
                 BottomSheetContent(
                     icon = Icons.Default.Info,
                     title = "App Information",
@@ -162,7 +157,6 @@ fun BottomSheetContent(
     title : String,
     message : String
 ){
-
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -179,21 +173,17 @@ fun BottomSheetContent(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = Color.Blue,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(30.dp)
             )
 
             Spacer(modifier = Modifier.width(12.dp))
-
             Column (modifier = Modifier.fillMaxWidth()){
-                Text(title,
-                    style = MaterialTheme.typography.titleLarge)
+                Text(title, style = MaterialTheme.typography.titleLarge,color = MaterialTheme.colorScheme.onSurface)
 
                 Spacer(modifier = Modifier.width(8.dp))
-
-                Text(message, style = MaterialTheme.typography.bodyLarge)
+                Text(message, style = MaterialTheme.typography.bodyLarge,    color = MaterialTheme.colorScheme.onSurface)
             }//Column
-
         }//Row
     }//Column
 }//BottomSheetContent
