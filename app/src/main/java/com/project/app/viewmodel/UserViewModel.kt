@@ -27,18 +27,33 @@ class UserViewModel(
 
     private val registeredUsers = mutableListOf<User>()
 
-    fun registerUser(newUser: User): Boolean {
-        // simple validation: no duplicate emails
-        if (registeredUsers.any { it.email == newUser.email }) return false
-        registeredUsers.add(newUser)
-        _user.value = newUser
-        return true
+//    fun registerUser(newUser: User): Boolean {
+//        // simple validation: no duplicate emails
+//        if (registeredUsers.any { it.email == newUser.email }) return false
+//        registeredUsers.add(newUser)
+//        _user.value = newUser
+//        return true
+//    }
+//
+//    fun login(email: String, password: String): User? {
+//        val found = registeredUsers.find { it.email == email && it.password == password }
+//        if (found != null) _user.value = found
+//        return found
+//    }
+
+    fun registerUser(newUser: User, onResult: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            val success = userRepository.registerUser(newUser)
+            onResult(success)
+        }
     }
 
-    fun login(email: String, password: String): User? {
-        val found = registeredUsers.find { it.email == email && it.password == password }
-        if (found != null) _user.value = found
-        return found
+    fun login(email: String, password: String, onResult: (User?) -> Unit) {
+        viewModelScope.launch {
+            val user = userRepository.loginUser(email, password)
+            if (user != null) _user.value = user
+            onResult(user)
+        }
     }
 
     fun updateLogin(email: String, password: String) {

@@ -8,13 +8,14 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.project.app.model.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
 enum class AddressType { HOME, WORK, SCHOOL }
 
-class UserRepository(private val context: Context) {
+class UserRepository(private val context: Context, private val userDao: UserDao) {
 
     private val TAG = "UserRepository"
 
@@ -24,6 +25,20 @@ class UserRepository(private val context: Context) {
         val schoolAddress: String = ""
     )
 
+    suspend fun registerUser(user: User): Boolean {
+        val existing = userDao.getUserByEmail(user.email)
+        if (existing != null) return false
+
+        userDao.insertUser(user)
+        return true
+    }
+    suspend fun loginUser(email: String, password: String): User? {
+        return userDao.login(email, password)
+    }
+
+    fun getUserById(id: Int): Flow<User?> {
+        return userDao.getUserById(id)
+    }
     suspend fun addHome(address: String) {
         try {
             context.userDataStore.edit { prefs ->

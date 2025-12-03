@@ -8,15 +8,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
-import com.project.app.ui.theme.AppTheme
-import androidx.navigation.compose.rememberNavController
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
+import com.project.app.data.AppDatabase
 import com.project.app.data.SettingsRepository
 import com.project.app.data.UserRepository
+import com.project.app.ui.theme.AppTheme
 import com.project.app.nav.AppNavGraph
 import com.project.app.viewmodel.SettingsViewModel
 import com.project.app.viewmodel.SettingsViewModelFactory
@@ -28,8 +26,22 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        // Build Room database
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java,
+            "pickapp-db"
+        )
+            .fallbackToDestructiveMigration()
+            .build()
+
         val settingsRepository = SettingsRepository(this)
-        val userRepository = UserRepository(this)
+
+        // Pass DAO into UserRepository
+        val userRepository = UserRepository(
+            context = this,
+            userDao = db.userDao()
+        )
 
         setContent {
             AppRoot(
@@ -39,7 +51,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
 @Composable
 fun AppRoot(
     settingsRepository: SettingsRepository,
@@ -54,8 +65,6 @@ fun AppRoot(
     val userVM: UserViewModel = viewModel(
         factory = UserViewModelFactory(userRepository)
     )
-
-    //val userState by userVM.userData.collectAsState()
 
     AppTheme(darkTheme = settingsState.darkMode) {
         val navHostController = rememberNavController()

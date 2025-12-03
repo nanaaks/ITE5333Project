@@ -131,12 +131,25 @@ fun SignUpScreen(
                     if (name.isBlank() || email.isBlank() || password.length < 6) {
                         errorMessage = "Please fill all fields correctly."
                     } else {
-                        val success = userVM.registerUser(
-                            User(userId = 0, name, email, password, phone, payment)
-                        )
-                        if (success) {
-                            navHostController.navigate(Routes.Tabs.routeName)
-                        } else errorMessage = "Email already registered."
+//                        val success = userVM.registerUser(
+//                            User(name, email, password, phone, payment)
+//                        )
+//                        if (success) {
+//                            navHostController.navigate(Routes.Tabs.routeName)
+//                        } else errorMessage = "Email already registered."
+                        userVM.registerUser(
+                            User(
+                                name = name,
+                                email = email,
+                                password = password,
+                                phone = phone,
+                                payment = payment
+                            )
+                        ) { success ->
+                            if (success) navHostController.navigate(Routes.Tabs.routeName)
+                            else errorMessage = "Email already registered."
+                        }
+
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),

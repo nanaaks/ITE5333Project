@@ -107,16 +107,26 @@ fun SignInScreen(
                     if (email.isBlank() || password.isBlank()) {
                         errorMessage = "Please enter your email and password."
                     } else {
-                        val user = userVM.login(email, password)
-                        if (user != null) {
-                            navHostController.navigate(Routes.Home.routeName) {
-                                popUpTo(0) {
-                                    inclusive = true
+//                        val user = userVM.login(email, password)
+//                        if (user != null) {
+//                            navHostController.navigate(Routes.Home.routeName) {
+//                                popUpTo(0) {
+//                                    inclusive = true
+//                                }
+//                            }
+//                        } else {
+//                            errorMessage = "Invalid credentials. Please try again."
+//                        }
+                        userVM.login(email, password) { user ->
+                            if (user != null) {
+                                navHostController.navigate(Routes.Home.routeName) {
+                                    popUpTo(0) { inclusive = true }
                                 }
+                            } else {
+                                errorMessage = "Invalid credentials."
                             }
-                        } else {
-                            errorMessage = "Invalid credentials. Please try again."
                         }
+
                     }
                 },
                 shape = RoundedCornerShape(8.dp),
