@@ -71,7 +71,7 @@ fun SignInScreen(
 
             Text(
                 text = "Sign In",
-                color = Color.Black,
+                color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
                 textAlign = TextAlign.Start
