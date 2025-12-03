@@ -84,7 +84,7 @@ fun DriveScreen(
                     Column {
                         Text("Today", fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurface)
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("$", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.Green)
+                            Text("$", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                             Spacer(Modifier.width(4.dp))
                             Text("%.2f".format(totalEarnings), fontSize = 28.sp, fontWeight = FontWeight.Bold)
                         }
@@ -102,7 +102,7 @@ fun DriveScreen(
             if (pendingJobs.isEmpty()) {
                 Box(Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center) {
-                    Text(text = "No requests nearby", color = Color.Gray)
+                    Text(text = "No requests nearby", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             } else {
                 LazyColumn(
@@ -126,7 +126,6 @@ fun DriveScreen(
         }
     }
 }
-
 @Composable
 fun RequestBox(
     name: String,
@@ -143,8 +142,10 @@ fun RequestBox(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .border(1.dp, if(isAlternate) Color(0xFFB3E5FC) else Color.LightGray)
-            .background(if(isAlternate) Color(0xFFE3F2FD) else Color.White)
+            .border(1.dp, if (isAlternate) MaterialTheme.colorScheme.primaryContainer
+            else MaterialTheme.colorScheme.outlineVariant)
+            .background(if (isAlternate) MaterialTheme.colorScheme.surfaceVariant
+            else MaterialTheme.colorScheme.surface)
             .padding(16.dp)
     ) {
         Column {
@@ -155,17 +156,23 @@ fun RequestBox(
                 Icon(Icons.Default.Place, contentDescription = null, tint = Color(0xFF039BE5))
             }
             Spacer(Modifier.height(4.dp))
-            Text("From: $start", color = Color.DarkGray)
-            Text("To: $dest", color = Color.DarkGray)
+            Text("From: $start", color = MaterialTheme.colorScheme.onSurface)
+            Text("To: $dest", color = MaterialTheme.colorScheme.onSurface)
+
+            Text(
+                "Type: $rideOption | Payment: $payment",
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
             Spacer(Modifier.height(4.dp))
             Row {
                 Text("$${"%.2f".format(price)}", fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.width(16.dp))
                 Icon(Icons.Default.AccessTime, contentDescription = null, tint = Color(0xFF00897B))
-                Text(eta, fontWeight = FontWeight.Bold, color = Color.Green)
+                Text(eta, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
             }
-            Spacer(Modifier.height(4.dp))
-            Text("Type: $rideOption | Payment: $payment", fontSize = 14.sp, color = Color.Gray)
+
             Spacer(Modifier.height(12.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(
