@@ -23,6 +23,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -59,20 +60,9 @@ fun DriveScreen(
             CenterAlignedTopAppBar(
                 title = { Text("Drive") },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.DarkGray,
-                    titleContentColor = Color.White
-                ),
-                navigationIcon = {
-                    IconButton(
-                        onClick = { navController.popBackStack() }
-                    ) {
-                        Text(
-                            "Back",
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                )
             )
         }
     ) { innerPadding ->
@@ -84,7 +74,7 @@ fun DriveScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.White)
+                    .background(MaterialTheme.colorScheme.surface)
                     .padding(20.dp)
             ) {
                 Row(
@@ -92,7 +82,7 @@ fun DriveScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column {
-                        Text("Today", fontSize = 16.sp, color = Color.DarkGray)
+                        Text("Today", fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurface)
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text("$", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Color.Green)
                             Spacer(Modifier.width(4.dp))
@@ -104,7 +94,7 @@ fun DriveScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End
                     ) {
-                        Text("$totalTrips trips", fontSize = 16.sp, color = Color.DarkGray)
+                        Text("$totalTrips trips", fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurface)
                     }
                 }
             }
@@ -181,12 +171,16 @@ fun RequestBox(
                 Button(
                     onClick = onAccept,
                     Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(Color(0xFF43A047))
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF43A047),
+                        contentColor = MaterialTheme.colorScheme.onPrimary)
                 ) { Text("Accept") }
                 OutlinedButton(
                     onClick = onDecline,
                     Modifier.weight(1f),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFD32F2F))
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = Color(0xFFD32F2F)
+                    )
                 ) { Text("Decline") }
             }
         }
