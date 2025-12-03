@@ -71,9 +71,7 @@ fun HomeScreen (
     val user by userVM.user.collectAsState()
 
     var showMenu by remember { mutableStateOf(false) }
-    var isDarkMode by remember { mutableStateOf(false) }
 
-    AppTheme(darkTheme = isDarkMode) {
         Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
@@ -155,7 +153,7 @@ fun HomeScreen (
             ) {
                 Text(
                     text = "Hello ${user.name}!",
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onBackground,
                     style = MaterialTheme.typography.headlineLarge,
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
                     textAlign = TextAlign.Start
@@ -179,7 +177,7 @@ fun HomeScreen (
                     item {
                         Text(
                             text = "Book a Ride or Search for Passengers",
-                            color = Color.Black
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                     }
 
@@ -191,7 +189,10 @@ fun HomeScreen (
                                 .clickable {
                                     //open premium sign up dialog
                                 },
-                            elevation = CardDefaults.cardElevation(8.dp)
+                            elevation = CardDefaults.cardElevation(8.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surface
+                            )
                         ) {
                             Column(
                                 modifier = Modifier
@@ -204,7 +205,8 @@ fun HomeScreen (
                                             + "Exclusive offers!\n"
                                             +"Member-only promos!\n\n"
                                             +"See terms and benefits details",
-                                    style = MaterialTheme.typography.titleMedium
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
 
                                 Spacer(modifier = Modifier.padding(8.dp))
@@ -220,7 +222,10 @@ fun HomeScreen (
                                 .clickable {
                                     //apply promotion to account
                                 },
-                            elevation = CardDefaults.cardElevation(8.dp)
+                            elevation = CardDefaults.cardElevation(8.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surface
+                            )
                         ) {
                             Column(
                                 modifier = Modifier
@@ -230,7 +235,8 @@ fun HomeScreen (
                                 Text(
                                     text = "Earn 5% on rides\n\n"
                                             + "Get 4 weeks free",
-                                    style = MaterialTheme.typography.titleMedium
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
 
                                 Spacer(modifier = Modifier.padding(8.dp))
@@ -246,7 +252,10 @@ fun HomeScreen (
                                 .clickable {
                                     //apply promotion to account
                                 },
-                            elevation = CardDefaults.cardElevation(8.dp)
+                            elevation = CardDefaults.cardElevation(8.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surface
+                            )
                         ) {
                             Column(
                                 modifier = Modifier
@@ -256,7 +265,8 @@ fun HomeScreen (
                                 Text(
                                     text = "10% - 30% off Rides\n\n"
                                             + "Expires on 31st Nov, 2025",
-                                    style = MaterialTheme.typography.titleMedium
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
 
                                 Spacer(modifier = Modifier.padding(8.dp))
@@ -272,7 +282,10 @@ fun HomeScreen (
                                 .clickable {
                                     //apply promotion to account
                                 },
-                            elevation = CardDefaults.cardElevation(8.dp)
+                            elevation = CardDefaults.cardElevation(8.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surface
+                            )
                         ) {
                             Column(
                                 modifier = Modifier
@@ -282,7 +295,8 @@ fun HomeScreen (
                                 Text(
                                     text = "Let us know what you think!\n\n"
                                             + "Provide feedback",
-                                    style = MaterialTheme.typography.titleMedium
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
 
                                 Spacer(modifier = Modifier.padding(8.dp))
@@ -302,4 +316,3 @@ fun HomeScreen (
 
         }//Scaffold
     }//Theme
-}
