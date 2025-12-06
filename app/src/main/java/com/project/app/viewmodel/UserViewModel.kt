@@ -22,7 +22,7 @@ class UserViewModel(
         }
     }
 
-    private val _user = MutableStateFlow(User())
+    private val _user = MutableStateFlow(User(0,"","","","",""))
     val user: StateFlow<User> = _user
 
     suspend fun registerUser(newUser: User): Boolean {

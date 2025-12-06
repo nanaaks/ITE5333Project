@@ -35,9 +35,7 @@ import com.project.app.nav.Routes
 import com.project.app.viewmodel.UserViewModel
 import kotlinx.coroutines.launch
 
-@OptIn( ExperimentalMaterial3Api::class,
-    ExperimentalMaterial3Api::class
-)
+@OptIn( ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(
     navHostController: NavController,

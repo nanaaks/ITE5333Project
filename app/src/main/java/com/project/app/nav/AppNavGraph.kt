@@ -41,8 +41,8 @@ fun AppNavGraph(
                 navHostController,
                 tabNavController,
                 userVM,
-                rideVM,
-                driveVM
+                driveVM,
+                rideVM
             )
         }
 

@@ -9,6 +9,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -17,6 +18,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.project.app.view.AccountScreen
 import com.project.app.view.RideScreen
 import com.project.app.view.DriveScreen
 import com.project.app.view.HomeScreen
@@ -90,14 +92,30 @@ fun TabNavGraph(
             }
 
             composable(TabRoutes.Ride.routeName) {
+                val user = userVM.user.collectAsState().value
+
                 RideScreen(
                     navController = navHostController,
                     driveVM = driveVM,
-                    rideViewModel = rideVM,
-                    userName = userVM.user.value.name
+                    rideVM = rideVM,
+                    userName = user.name,
+                    userId = user.userId
                 )
             }
 
+//            composable(TabRoutes.Ride.routeName) { backStackEntry ->
+//                val userId = backStackEntry.arguments?.getString("userId")?.toIntOrNull()
+//
+//                userId?.let {
+//                    RideScreen(
+//                        navController = navHostController,
+//                        driveVM = driveVM,
+//                        rideVM = rideVM,
+//                        userName = userVM.user.value.name,
+//                        userId = userId
+//                    )
+//                }
+//            }
 
             composable(TabRoutes.Drive.routeName) {
                 DriveScreen(navHostController, driveVM)

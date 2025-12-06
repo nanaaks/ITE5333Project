@@ -82,10 +82,6 @@ fun AppRoot(
     val rideVM : RideViewModel = viewModel(
         factory = RideViewModelFactory(rideRepository)
     )
-    val rideVM: RideViewModel = viewModel(
-        factory = RideViewModelFactory(RideRepository)
-    )
-
 
     AppTheme(darkTheme = settingsState.darkMode) {
         val navHostController = rememberNavController()
