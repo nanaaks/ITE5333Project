@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 
 @Database(
     entities = [User::class, Ride::class],
-    version = 3
+    version = 4
 )
 abstract class AppDatabase: RoomDatabase() {
 

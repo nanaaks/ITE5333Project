@@ -56,6 +56,7 @@ import com.project.app.nav.Routes
 import com.project.app.viewmodel.DriveViewModel
 import com.project.app.viewmodel.RideViewModel
 import com.project.app.viewmodel.UserViewModel
+import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,6 +69,12 @@ fun RideScreen(
     userId : Int
 ) {
     //val users : List<User> by userVM.allUsers.collectAsState(initial = emptyList())
+
+    var originStreet by remember { mutableStateOf("") }
+    var originCity by remember { mutableStateOf("") }
+    var destStreet by remember { mutableStateOf("") }
+    var destCity by remember { mutableStateOf("") }
+    var price by remember { mutableStateOf(0.00) }
 
     var showAddAddressDialog by remember { mutableStateOf(false) }
     var street by remember { mutableStateOf("") }
@@ -98,7 +105,11 @@ fun RideScreen(
                     label = "Select Pickup",
                     selectedAddress = rideVM.pickup.value,
                     addresses = rideVM.allAddresses.value,
-                    onAddressSelected = { rideVM.pickup.value = it }
+                    onAddressSelected = {
+                        rideVM.pickup.value = it
+                        originStreet = it.street
+                        originCity = it.city
+                    }
                 )
 
                 TextButton(
@@ -119,7 +130,11 @@ fun RideScreen(
                     label = "Select Destination",
                     selectedAddress = rideVM.destination.value,
                     addresses = rideVM.allAddresses.value,
-                    onAddressSelected = { rideVM.destination.value = it }
+                    onAddressSelected = {
+                        rideVM.destination.value = it
+                        destStreet = it.street
+                        destCity = it.city
+                    }
                 )
             }
 
@@ -208,6 +223,8 @@ fun RideScreen(
 
                     if (rideVM.discountApplied.value)
                         Text("Promo Applied!", color = MaterialTheme.colorScheme.secondary)
+
+                    price = rideVM.fare.value
                 }
             }
 
@@ -219,7 +236,6 @@ fun RideScreen(
                             rideVM.bookRide(userName= userName)
                             driveVM.refreshJobs()
                             // TODO - Use AlertDialog to display confirmation instead of separate screen
-                            navController.navigate(Routes.Result.routeName)
                             /*
                             val newRide = Ride(
                                 startAddress = rideViewModel.pickup.value,
@@ -229,10 +245,32 @@ fun RideScreen(
                                 status = "Pending",
                                 id = id
                             )
+                            val newRide = Ride(
+                                originStreet = originStreet,
+                                originCity = originCity,
+                                destStreet = destStreet,
+                                destCity = destCity,
+                                price = price.toFloatOrNull() ?: 0f,
+                                dateTime = dateTime,
+                                status = status
+                            )
                             rideVM.insertRide(newRide)
 
                             navController.popBackStack()
                              */
+                            rideVM.insertRide(
+                                Ride(
+                                    originStreet = originStreet,
+                                    originCity = originCity,
+                                    destStreet = destStreet,
+                                    destCity = destCity,
+                                    price = price,
+                                    dateTime = LocalDateTime.now().toString(),
+                                    status = "Pending",
+                                    id = userId
+                                    )
+                            )
+                            navController.navigate(Routes.Result.routeName)
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),

@@ -19,9 +19,11 @@ import com.project.app.data.Address
     )
 data class Ride(
     @PrimaryKey(autoGenerate = true) val rideId: Int = 0,
-    val startAddress: String,
-    val endAddress: String,
-    val price: Float,
+    val originStreet: String,
+    val originCity: String,
+    val destStreet: String,
+    val destCity: String,
+    val price: Double,
     val dateTime: String,
     val status: String,
     val id: Int = 1

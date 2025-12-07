@@ -24,13 +24,14 @@ class RideViewModel(
     private val rideRepository: RideRepository
 ) : ViewModel() {
 
+    // Database operations
     private val _searchQuery = MutableStateFlow<String>("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
     private val _allRides = MutableStateFlow<List<Ride>>(emptyList())
 
     val allRides: StateFlow<List<Ride>> = combine(_allRides, _searchQuery){ list, query ->
         if (query.isBlank()) list
-        else list.filter { it.endAddress.contains(query, ignoreCase = true) }
+        else list.filter { it.destStreet.contains(query, ignoreCase = true) }
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
@@ -107,8 +108,6 @@ class RideViewModel(
     fun clearOperationStatus() {
         _operationStatus.value = null
     }
-
-    /////////////////////////////////////////////////////////////////////////
 
 //    Address Management
     val allAddresses = mutableStateOf(dummyAddresses.toMutableList())

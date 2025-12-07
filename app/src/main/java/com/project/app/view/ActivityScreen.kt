@@ -78,8 +78,11 @@ fun ActivityScreen(
             )
         },//topBar
         content = { paddingValues ->
-            Column(modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp)) {
-
+            Column(
+                modifier = Modifier.fillMaxSize()
+                    .padding(paddingValues).
+                    padding(16.dp)
+            ) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
@@ -89,7 +92,7 @@ fun ActivityScreen(
                     label = { Text("Search Past or Upcoming Rides")},
                     leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search")},
                     singleLine = true
-                )//OutlinedTextField
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -101,9 +104,8 @@ fun ActivityScreen(
                         enabled = rides.isNotEmpty(),
                         onClick = {
                             rideVM.sortRidesByDate()
-                        },
-
-                        ) {
+                        }
+                    ) {
                         Text("Sort by Date")
                     }
 
@@ -111,7 +113,8 @@ fun ActivityScreen(
                         enabled = rides.isNotEmpty(),
                         onClick = {
                             rideVM.sortRidesByPrice()
-                        }) {
+                        }
+                    ) {
                         Text("Sort by Price")
                     }
                 }
@@ -147,15 +150,15 @@ fun ActivityScreen(
                             ) {
                                 Column(modifier = Modifier.weight(1f)) {
                                     Text(
-                                        text = ride.endAddress,
+                                        text = "${ride.destStreet}, ${ride.destCity}",
                                         style = MaterialTheme.typography.titleLarge
                                     )
                                     Text(
-                                        text = "Origin: ${ride.startAddress}",
+                                        text = "Pickup: ${ride.originStreet}, ${ride.originCity}",
                                         style = MaterialTheme.typography.bodyMedium
                                     )
                                     Text(
-                                        text = "Booking Date: ${ride.dateTime}",
+                                        text = "Date: ${ride.dateTime}",
                                         style = MaterialTheme.typography.bodyMedium
                                     )
                                     Text(

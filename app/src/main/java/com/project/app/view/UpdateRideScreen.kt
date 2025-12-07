@@ -39,8 +39,10 @@ fun UpdateRideScreen(
     val allRides: List<Ride> by rideVM.allRides.collectAsState(initial = emptyList())
     val ride = remember(allRides) { allRides.find { it.rideId == rideId } }
 
-    var startAddress by remember(ride) { mutableStateOf(ride?.startAddress ?: "") }
-    var endAddress by remember(ride) { mutableStateOf(ride?.endAddress ?: "") }
+    var originStreet by remember(ride) { mutableStateOf(ride?.originStreet ?: "") }
+    var originCity by remember(ride) { mutableStateOf(ride?.originCity ?: "") }
+    var destStreet by remember(ride) { mutableStateOf(ride?.destStreet ?: "") }
+    var destCity by remember(ride) { mutableStateOf(ride?.destCity ?: "") }
     var price by remember(ride) { mutableStateOf(ride?.price?.toString() ?: "") }
     var dateTime by remember(ride) { mutableStateOf(ride?.dateTime ?: "") }
     var status by remember(ride) { mutableStateOf(ride?.status ?: "") }
@@ -57,19 +59,38 @@ fun UpdateRideScreen(
         },
         content = { paddingValues ->
             Column(modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp)) {
+
                 TextField(
-                    value = startAddress,
-                    onValueChange = { startAddress = it },
-                    label = { Text("Origin") },
+                    value = originStreet,
+                    onValueChange = { originStreet = it },
+                    label = { Text("Street") },
                     modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 TextField(
-                    value = endAddress,
-                    onValueChange = { endAddress = it },
-                    label = { Text("Destination") },
+                    value = originCity,
+                    onValueChange = { originCity = it },
+                    label = { Text("City") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                TextField(
+                    value = destStreet,
+                    onValueChange = { destStreet = it },
+                    label = { Text("Destination Street") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                TextField(
+                    value = destCity,
+                    onValueChange = { destCity = it },
+                    label = { Text("Destination City") },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -88,10 +109,16 @@ fun UpdateRideScreen(
                 Button(
                     onClick = {
                         if (ride != null) {
-                            val updatedRide = ride.copy(startAddress = startAddress, endAddress = endAddress, price = price.toFloatOrNull() ?: 0f, dateTime = dateTime, status = status)
-
+                            val updatedRide = ride.copy(
+                                originStreet = originStreet,
+                                originCity = originCity,
+                                destStreet = destStreet,
+                                destCity = destCity,
+                                price = price.toDouble(),
+                                dateTime = dateTime,
+                                status = status
+                            )
                             rideVM.updateRide(updatedRide)
-
                             navHostController.popBackStack()
                         }
                     },
