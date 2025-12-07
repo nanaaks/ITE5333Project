@@ -73,8 +73,8 @@ fun AppNavGraph(
             val userId = backStackEntry.arguments?.getString("userId")?.toIntOrNull()
 
             userId?.let {
-                val subId = backStackEntry.arguments?.getString("subId")?.toIntOrNull()
-                subId?.let {
+                val rideId = backStackEntry.arguments?.getString("rideId")?.toIntOrNull()
+                rideId?.let {
                     UpdateRideScreen(navHostController, rideVM, userId, rideId = it)
                 }
             }
