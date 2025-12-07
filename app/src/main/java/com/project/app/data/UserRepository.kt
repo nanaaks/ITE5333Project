@@ -15,15 +15,12 @@ import kotlinx.coroutines.flow.map
 
 enum class AddressType { HOME, WORK, SCHOOL }
 
-class UserRepository(private val context: Context, private val userDao: UserDao) {
-
-    private val TAG = "UserRepository"
-
-    data class UserState(
-        val homeAddress: String = "",
-        val workAddress: String = "",
-        val schoolAddress: String = ""
-    )
+class UserRepository(
+    private val context: Context,
+    private val userDao: UserDao
+) {
+    // User Database
+    val allUsers : Flow<List<User>> = userDao.getAllUsers()
 
     suspend fun registerUser(user: User): Boolean {
         val existing = userDao.getUserByEmail(user.email)
@@ -32,6 +29,11 @@ class UserRepository(private val context: Context, private val userDao: UserDao)
         userDao.insertUser(user)
         return true
     }
+
+    suspend fun update(user: User) = userDao.updateUser(user)
+
+    suspend fun delete(user: User) = userDao.deleteUser(user)
+
     suspend fun loginUser(email: String, password: String): User? {
         return userDao.login(email, password)
     }
@@ -39,6 +41,16 @@ class UserRepository(private val context: Context, private val userDao: UserDao)
     fun getUserById(id: Int): Flow<User?> {
         return userDao.getUserById(id)
     }
+
+    // User Preferences
+    private val TAG = "UserRepository"
+
+    data class UserState(
+        val homeAddress: String = "",
+        val workAddress: String = "",
+        val schoolAddress: String = ""
+    )
+
     suspend fun addHome(address: String) {
         try {
             context.userDataStore.edit { prefs ->

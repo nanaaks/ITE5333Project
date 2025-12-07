@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -18,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -33,6 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.project.app.model.User
+import com.project.app.nav.Routes
 import com.project.app.viewmodel.UserViewModel
 
 
@@ -42,23 +46,22 @@ fun AccountScreen(
     userVM: UserViewModel,
     userId: Int
 ) {
-    val userState by userVM.user.collectAsState()
-    val state by userVM.userData.collectAsState()
+    val allUsers: List<User> by userVM.allUsers.collectAsState(initial = emptyList())
+    val user = allUsers.find { it.userId == userId }
 
-    var name by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf(userState.email) }
-    var phone by remember { mutableStateOf(userState.phone) }
-    var password by remember { mutableStateOf(userState.password) }
+    var name by remember(user) { mutableStateOf(user?.name ?: "") }
+    var email by remember(user) { mutableStateOf(user?.email ?: "") }
+    var phone by remember(user) { mutableStateOf(user?.phone ?: "") }
+    var password by remember(user) { mutableStateOf(user?.password ?: "") }
+    var role by remember(user) { mutableStateOf(user?.role ?: "") }
+
+    val state by userVM.userData.collectAsState()
+    var showConfirmDialog by remember { mutableStateOf(false) }
+
     var home by remember { mutableStateOf(state.homeAddress) }
     var work by remember { mutableStateOf(state.workAddress) }
     var school by remember { mutableStateOf(state.schoolAddress) }
 
-    LaunchedEffect(userState) {
-        name = userState.name
-        email = userState.email
-        phone = userState.phone
-        password = userState.password
-    }
     //set the existing data to the UI variables
     LaunchedEffect(state) {
         home = state.homeAddress
@@ -167,7 +170,11 @@ fun AccountScreen(
 
             Button(
                 onClick = {
-                    userVM.updateUserDetails(name, email, phone, password)
+                    if (user != null) {
+                        val updatedUser = user.copy(name = name, email = email, phone = phone, password = password, role = role)
+                        userVM.updateUser(updatedUser)
+                        navHostController.popBackStack()
+                    }
                     userVM.savePrefs(home, work, school)
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -176,6 +183,50 @@ fun AccountScreen(
                     contentColor = MaterialTheme.colorScheme.onPrimary)
             ) {
                 Text("Save Changes", style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onPrimary)
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            if (showConfirmDialog) {
+                AlertDialog(
+                    onDismissRequest = { showConfirmDialog = false },
+                    title = { Text("Delete Your Account") },
+                    text = { Text("Are you sure you want to delete your account?") },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            //userVM.deleteUser(user!!)
+                            if (user != null) {
+                                userVM.deleteUser(user)
+                                showConfirmDialog = false
+                                navHostController.navigate(Routes.SignIn.routeName) {
+                                    popUpTo(0)
+                                }
+                            }
+                        }) {
+                            Text("Yes")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = {
+                            showConfirmDialog = false
+                        }) {
+                            Text("No")
+                        }
+                    }
+                )
+            }
+
+            Button(
+                onClick = {
+                    showConfirmDialog = true
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError
+                )
+            ) {
+                Text("Close Account", style = MaterialTheme.typography.bodyLarge)
             }
         }
     }

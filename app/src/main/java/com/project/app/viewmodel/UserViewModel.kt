@@ -6,26 +6,35 @@ import com.project.app.data.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import com.project.app.model.User
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlin.text.insert
 
 class UserViewModel(
     private val userRepository: UserRepository
 ): ViewModel() {
 
-    private val _userData = MutableStateFlow(UserRepository.UserState())
-    val userData: StateFlow<UserRepository.UserState> = _userData
+    // Database operations
 
-    init {
-        viewModelScope.launch {
-            userRepository.userFlow.collectLatest { _userData.value = it }
-        }
-    }
+    private val _allUsers = MutableStateFlow<List<User>>(emptyList())
+    val allUsers: StateFlow<List<User>> = _allUsers.asStateFlow()
+
+    private val _operationStatus = MutableStateFlow<String?>(null)
+    val operationStatus: StateFlow<String?> = _operationStatus.asStateFlow()
 
     private val _user = MutableStateFlow(User(0,"","","","",""))
     val user: StateFlow<User> = _user
 
-    suspend fun registerUser(newUser: User): Boolean {
+    init {
+        getAllUsers()
+    }
+
+    private fun getAllUsers() = viewModelScope.launch {
+        userRepository.allUsers.collect { _allUsers.value = it }
+    }
+
+    suspend fun registerUser(newUser: User): Boolean  {
         val success = userRepository.registerUser(newUser)
         if (success) {
             _user.value = newUser
@@ -41,24 +50,33 @@ class UserViewModel(
         }
     }
 
-    fun updateLogin(email: String, password: String) {
-        _user.value = _user.value.copy(email = email, password = password)
+    fun updateUser(user: User) = viewModelScope.launch {
+        try {
+            userRepository.update(user)
+            _operationStatus.value = "User updated successfully"
+        } catch (e: Exception) {
+            _operationStatus.value = "Failed to update user: ${e.message}"
+        }
     }
 
-    fun updatePhone(phone: String) {
-        _user.value = _user.value.copy(phone = phone)
+    fun deleteUser(user: User) = viewModelScope.launch {
+        try {
+            userRepository.delete(user)
+            _operationStatus.value = "User deleted successfully"
+        } catch (e: Exception) {
+            _operationStatus.value = "Failed to delete user: ${e.message}"
+        }
     }
 
-    fun updatePayment(payment: String) {
-        _user.value = _user.value.copy(payment = payment)
-    }
-    fun updateUserDetails(name: String, email: String, phone: String, password: String) {
-        _user.value = _user.value.copy(
-            name = name,
-            email = email,
-            phone = phone,
-            password = password
-        )
+    // Datastore operations
+
+    private val _userData = MutableStateFlow(UserRepository.UserState())
+    val userData: StateFlow<UserRepository.UserState> = _userData
+
+    init {
+        viewModelScope.launch {
+            userRepository.userFlow.collectLatest { _userData.value = it }
+        }
     }
 
     fun savePrefs(
@@ -87,5 +105,9 @@ class UserViewModel(
         viewModelScope.launch {
             userRepository.addSchool(address)
         }
+    }
+
+    fun clearOperationStatus() {
+        _operationStatus.value = null
     }
 }

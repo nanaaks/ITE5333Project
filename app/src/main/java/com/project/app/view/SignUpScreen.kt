@@ -38,7 +38,7 @@ import kotlinx.coroutines.launch
 @OptIn( ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpScreen(
-    navHostController: NavController,
+    navController: NavController,
     userVM: UserViewModel
 ) {
 
@@ -46,7 +46,7 @@ fun SignUpScreen(
     var email by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var payment by remember { mutableStateOf("") }
+    var role by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
 
@@ -72,7 +72,9 @@ fun SignUpScreen(
                 textStyle = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.fillMaxWidth()
             )
+
             Spacer(Modifier.height(12.dp))
+
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
@@ -81,7 +83,9 @@ fun SignUpScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier.fillMaxWidth()
             )
+
             Spacer(Modifier.height(12.dp))
+
             OutlinedTextField(
                 value = phone,
                 onValueChange = { phone = it },
@@ -90,7 +94,9 @@ fun SignUpScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 modifier = Modifier.fillMaxWidth()
             )
+
             Spacer(Modifier.height(12.dp))
+
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
@@ -99,6 +105,7 @@ fun SignUpScreen(
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()
             )
+
             Spacer(Modifier.height(12.dp))
 
             // Payment dropdown
@@ -110,18 +117,26 @@ fun SignUpScreen(
             ) {
                 OutlinedTextField(
                     readOnly = true,
-                    value = payment,
+                    value = role,
                     onValueChange = {},
-                    label = { Text("Payment Method") },
+                    label = { Text("Account Type") },
                     textStyle = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier
                         .menuAnchor()
                         .fillMaxWidth()
                 )
-                ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                    DropdownMenuItem(text = { Text("Credit or Debit Card") }, onClick = { payment = "Card"; expanded = false })
-                    DropdownMenuItem(text = { Text("Gift Card") }, onClick = { payment = "Gift"; expanded = false })
-                    DropdownMenuItem(text = { Text("Digital Wallet") }, onClick = { payment = "Wallet"; expanded = false })
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Rider") },
+                        onClick = { role = "Rider"; expanded = false }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Driver") },
+                        onClick = { role = "Driver"; expanded = false }
+                    )
                 }
             }
 
@@ -132,13 +147,13 @@ fun SignUpScreen(
                     if (name.isBlank() || email.isBlank() || password.length < 6) {
                         errorMessage = "Please fill all fields correctly."
                     } else {
-                        navHostController.context
+                        navController.context
                         scope.launch {
                             val success = userVM.registerUser(
-                                User(name = name, email = email, password = password, phone = phone, payment =  payment)
+                                User(name = name, email = email, password = password, phone = phone, role =  role)
                             )
                             if (success) {
-                                navHostController.navigate(Routes.Tabs.routeName)
+                                navController.navigate(Routes.Tabs.routeName)
                             } else {
                                 errorMessage = "Email already registered."
                             }

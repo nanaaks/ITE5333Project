@@ -95,7 +95,7 @@ fun HomeScreen (
                             onDismissRequest = { showMenu = false }
                         ) {
                             DropdownMenuItem(
-                                text = { Text("Profile") },
+                                text = { Text("Account") },
                                 leadingIcon = {
                                     Icon(
                                         Icons.Filled.Person,
