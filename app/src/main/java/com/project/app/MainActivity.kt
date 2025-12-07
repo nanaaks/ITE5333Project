@@ -35,15 +35,6 @@ class MainActivity : ComponentActivity() {
             AppDatabase.getDatabase(this, scope)
         }
 
-//        // Build Room database
-//        val db = Room.databaseBuilder(
-//            applicationContext,
-//            AppDatabase::class.java,
-//            "pickapp-db"
-//        )
-//            .fallbackToDestructiveMigration()
-//            .build()
-
         // Pass DAO into UserRepository
         val userRepository = UserRepository(
             context = this,

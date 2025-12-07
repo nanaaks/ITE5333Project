@@ -21,14 +21,13 @@ fun AppNavGraph(
     settingsVM: SettingsViewModel,
     rideVM: RideViewModel
 ) {
-    val tabNavController = rememberNavController()
     val driveVM: DriveViewModel = viewModel()
 
     NavHost(
-        navHostController,
-        startDestination = Routes.SignIn.routeName
+        navController = navHostController,
+        startDestination = "signin"
     ) {
-        composable(Routes.SignIn.routeName) {
+        composable("signin") {
             SignInScreen(navHostController, userVM)
         }
 
@@ -37,6 +36,8 @@ fun AppNavGraph(
         }
 
         composable(Routes.Tabs.routeName) {
+            val tabNavController = rememberNavController()
+
             TabNavGraph(
                 navHostController,
                 tabNavController,

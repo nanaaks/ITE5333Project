@@ -103,20 +103,6 @@ fun TabNavGraph(
                 )
             }
 
-//            composable(TabRoutes.Ride.routeName) { backStackEntry ->
-//                val userId = backStackEntry.arguments?.getString("userId")?.toIntOrNull()
-//
-//                userId?.let {
-//                    RideScreen(
-//                        navController = navHostController,
-//                        driveVM = driveVM,
-//                        rideVM = rideVM,
-//                        userName = userVM.user.value.name,
-//                        userId = userId
-//                    )
-//                }
-//            }
-
             composable(TabRoutes.Drive.routeName) {
                 DriveScreen(navHostController, driveVM)
             }
