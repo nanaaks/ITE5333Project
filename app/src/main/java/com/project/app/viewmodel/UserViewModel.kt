@@ -53,18 +53,18 @@ class UserViewModel(
     fun updateUser(user: User) = viewModelScope.launch {
         try {
             userRepository.update(user)
-            _operationStatus.value = "User updated successfully"
+            _operationStatus.value = "Account successfully updated"
         } catch (e: Exception) {
-            _operationStatus.value = "Failed to update user: ${e.message}"
+            _operationStatus.value = "Update failed: ${e.message}"
         }
     }
 
     fun deleteUser(user: User) = viewModelScope.launch {
         try {
             userRepository.delete(user)
-            _operationStatus.value = "User deleted successfully"
+            _operationStatus.value = "Account successfully deleted"
         } catch (e: Exception) {
-            _operationStatus.value = "Failed to delete user: ${e.message}"
+            _operationStatus.value = "Deletion failed: ${e.message}"
         }
     }
 

@@ -18,6 +18,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
@@ -62,14 +64,25 @@ fun AccountScreen(
     var work by remember { mutableStateOf(state.workAddress) }
     var school by remember { mutableStateOf(state.schoolAddress) }
 
-    //set the existing data to the UI variables
-    LaunchedEffect(state) {
+    val operationStatus by userVM.operationStatus.collectAsState()
+
+    // Create a single SnackbarHostState
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    //set existing data to UI variables and show snackbar for status messages
+    LaunchedEffect(state, operationStatus) {
         home = state.homeAddress
         work = state.workAddress
         school = state.schoolAddress
+
+        operationStatus?.let { message ->
+            snackbarHostState.showSnackbar(message)
+            userVM.clearOperationStatus() // clear after showing
+        }
     }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("My Account") },
@@ -173,7 +186,7 @@ fun AccountScreen(
                     if (user != null) {
                         val updatedUser = user.copy(name = name, email = email, phone = phone, password = password, role = role)
                         userVM.updateUser(updatedUser)
-                        navHostController.popBackStack()
+                        //navHostController.popBackStack()
                     }
                     userVM.savePrefs(home, work, school)
                 },
