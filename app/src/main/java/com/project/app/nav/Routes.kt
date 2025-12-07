@@ -1,7 +1,9 @@
 package com.project.app.nav
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.DirectionsCar
+import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.Hail
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -44,5 +46,17 @@ sealed class TabRoutes(
         title = "Drive",
         icon = Icons.Default.DirectionsCar,
         badgeCount = 0
+    )
+
+    object Activity : TabRoutes(
+        routeName = "activitytab",
+        title = "Activity",
+        icon = Icons.Default.Event
+    )
+
+    object Jobs : TabRoutes(
+        routeName = "jobstab",
+        title = "Jobs",
+        icon = Icons.Default.Dashboard
     )
 }

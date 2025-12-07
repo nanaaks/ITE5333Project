@@ -41,7 +41,6 @@ import com.project.app.model.User
 import com.project.app.nav.Routes
 import com.project.app.viewmodel.UserViewModel
 
-
 @Composable
 fun AccountScreen(
     navHostController: NavHostController,

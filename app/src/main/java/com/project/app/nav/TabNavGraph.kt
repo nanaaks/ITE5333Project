@@ -19,6 +19,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.project.app.view.AccountScreen
+import com.project.app.view.ActivityScreen
 import com.project.app.view.RideScreen
 import com.project.app.view.DriveScreen
 import com.project.app.view.HomeScreen
@@ -34,7 +35,13 @@ fun TabNavGraph(
     driveVM : DriveViewModel,
     rideVM : RideViewModel
 ) {
-    val screens = listOf(TabRoutes.Home, TabRoutes.Ride, TabRoutes.Drive)
+    val screens = listOf(
+        TabRoutes.Home,
+        TabRoutes.Ride,
+        TabRoutes.Drive,
+        TabRoutes.Jobs,
+        TabRoutes.Activity
+    )
     val navBackStackEntry by tabNavController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
@@ -105,6 +112,26 @@ fun TabNavGraph(
 
             composable(TabRoutes.Drive.routeName) {
                 DriveScreen(navHostController, driveVM)
+            }
+
+            composable(TabRoutes.Activity.routeName) {
+                val user = userVM.user.collectAsState().value
+
+                ActivityScreen(
+                    navHostController = navHostController,
+                    rideVM = rideVM,
+                    userId = user.userId
+                )
+            }
+
+            composable(TabRoutes.Jobs.routeName) {
+                val user = userVM.user.collectAsState().value
+
+                ActivityScreen(
+                    navHostController = navHostController,
+                    rideVM = rideVM,
+                    userId = user.userId
+                )
             }
         }
     }

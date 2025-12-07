@@ -43,7 +43,11 @@ import com.project.app.viewmodel.RideViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ActivityScreen(navHostController: NavHostController, rideVM : RideViewModel, userId : Int) {
+fun ActivityScreen(
+    navHostController: NavHostController,
+    rideVM : RideViewModel,
+    userId : Int
+) {
     val rides: List<Ride> by rideVM.allRides.collectAsState(initial = emptyList())
     var showConfirmDialog by remember { mutableStateOf(false) }
 
@@ -53,15 +57,13 @@ fun ActivityScreen(navHostController: NavHostController, rideVM : RideViewModel,
     var selectedRide by remember { mutableStateOf<Ride?>(null) }
     val searchQuery by rideVM.searchQuery.collectAsState()
 
-    LaunchedEffect(operationStatus) {
+    LaunchedEffect(Unit, operationStatus) {
+        rideVM.getAllRides(userId)
+
         operationStatus?.let { message ->
             snackbarHostState.showSnackbar(message)
             rideVM.clearOperationStatus()
         }
-    }
-
-    LaunchedEffect(Unit) {
-        rideVM.getAllRides(userId)
     }
 
     Scaffold(
@@ -199,7 +201,7 @@ fun ActivityScreen(navHostController: NavHostController, rideVM : RideViewModel,
                         }
                     }
                 } else {
-                    Text("You have no activity yet. Book a ride or accept a passenger!.",
+                    Text("You have no activity yet. Book a ride or schedule a future trip!.",
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.fillMaxWidth().padding(16.dp))
                 }
