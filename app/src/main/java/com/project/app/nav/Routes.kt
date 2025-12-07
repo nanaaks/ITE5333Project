@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 
 sealed class Routes(val routeName: String) {
-
     object SignIn : Routes("signin")
     object SignUp : Routes("signup")
     object Home : Routes("home")

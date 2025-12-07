@@ -41,6 +41,7 @@ import com.project.app.model.User
 import com.project.app.nav.Routes
 import com.project.app.viewmodel.UserViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountScreen(
     navHostController: NavHostController,
@@ -48,7 +49,7 @@ fun AccountScreen(
     userId: Int
 ) {
     val allUsers: List<User> by userVM.allUsers.collectAsState(initial = emptyList())
-    val user = allUsers.find { it.userId == userId }
+    val user = remember(allUsers) { allUsers.find { it.userId == userId } }
 
     var name by remember(user) { mutableStateOf(user?.name ?: "") }
     var email by remember(user) { mutableStateOf(user?.email ?: "") }
