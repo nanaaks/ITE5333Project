@@ -176,7 +176,10 @@ fun HomeScreen (
 
                     item {
                         Text(
-                            text = "Book a Ride or Search for Passengers",
+                            text = if (user.role == "Driver")
+                                "Search for passengers and manage your rides"
+                            else
+                                "Book a ride to your destination",
                             color = MaterialTheme.colorScheme.onBackground
                         )
                     }

@@ -35,13 +35,20 @@ fun TabNavGraph(
     driveVM : DriveViewModel,
     rideVM : RideViewModel
 ) {
-    val screens = listOf(
-        TabRoutes.Home,
-        TabRoutes.Ride,
-        TabRoutes.Drive,
-        //TabRoutes.Jobs,
-        TabRoutes.Activity
-    )
+    val user by userVM.user.collectAsState()
+    val screens = if (user.role == "Driver") {
+        listOf(
+            TabRoutes.Home,
+            TabRoutes.Drive,
+            TabRoutes.Activity
+        )
+    } else {
+        listOf(
+            TabRoutes.Home,
+            TabRoutes.Ride,
+            TabRoutes.Activity
+        )
+    }
     val navBackStackEntry by tabNavController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
