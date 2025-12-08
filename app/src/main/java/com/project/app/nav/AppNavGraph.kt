@@ -53,7 +53,8 @@ fun AppNavGraph(
 
         composable(Routes.Settings.routeName) {
             SettingsScreen(
-                settingsVM = settingsVM
+                settingsVM = settingsVM,
+                navHostController = navHostController
             )
         }
 
