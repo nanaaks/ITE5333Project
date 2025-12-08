@@ -127,7 +127,9 @@ fun TabNavGraph(
                 ActivityScreen(
                     navHostController = navHostController,
                     rideVM = rideVM,
-                    userId = user.userId
+                    driveVM = driveVM,
+                    userId = user.userId,
+                    userRole = user.role
                 )
             }
 
