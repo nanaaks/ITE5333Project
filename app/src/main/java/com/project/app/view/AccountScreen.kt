@@ -10,11 +10,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -86,6 +90,14 @@ fun AccountScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("My Account") },
+                navigationIcon = {
+                    IconButton(onClick = { navHostController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowLeft,
+                            contentDescription = "Back"
+                        )
+                    }
+                },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -144,16 +156,18 @@ fun AccountScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Text("Saved Addresses",
+            Text(
+                "Saved Addresses",
                 style = MaterialTheme.typography.labelLarge.copy(
                     fontSize = 24.sp,
-                ))
+                )
+            )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             OutlinedTextField(
                 value = home,
-                onValueChange = { home = it},
+                onValueChange = { home = it },
                 label = { Text("Home Address") },
                 textStyle = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.fillMaxWidth()
@@ -184,7 +198,13 @@ fun AccountScreen(
             Button(
                 onClick = {
                     if (user != null) {
-                        val updatedUser = user.copy(name = name, email = email, phone = phone, password = password, role = role)
+                        val updatedUser = user.copy(
+                            name = name,
+                            email = email,
+                            phone = phone,
+                            password = password,
+                            role = role
+                        )
                         userVM.updateUser(updatedUser)
                         //navHostController.popBackStack()
                     }
@@ -193,9 +213,14 @@ fun AccountScreen(
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary)
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
             ) {
-                Text("Save Changes", style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onPrimary)
+                Text(
+                    "Save Changes",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
