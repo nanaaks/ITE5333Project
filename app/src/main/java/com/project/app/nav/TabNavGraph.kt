@@ -39,7 +39,7 @@ fun TabNavGraph(
         TabRoutes.Home,
         TabRoutes.Ride,
         TabRoutes.Drive,
-        TabRoutes.Jobs,
+        //TabRoutes.Jobs,
         TabRoutes.Activity
     )
     val navBackStackEntry by tabNavController.currentBackStackEntryAsState()
@@ -124,15 +124,15 @@ fun TabNavGraph(
                 )
             }
 
-            composable(TabRoutes.Jobs.routeName) {
-                val user = userVM.user.collectAsState().value
-
-                ActivityScreen(
-                    navHostController = navHostController,
-                    rideVM = rideVM,
-                    userId = user.userId
-                )
-            }
+//            composable(TabRoutes.Jobs.routeName) {
+//                val user = userVM.user.collectAsState().value
+//
+//                ActivityScreen(
+//                    navHostController = navHostController,
+//                    rideVM = rideVM,
+//                    userId = user.userId
+//                )
+//            }
         }
     }
 }

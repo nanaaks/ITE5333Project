@@ -162,7 +162,7 @@ fun ActivityScreen(
                                         style = MaterialTheme.typography.bodyMedium
                                     )
                                     Text(
-                                        text = "Price: ${ride.price}",
+                                        text = "Price: $${"%.2f".format(ride.price)}",
                                         style = MaterialTheme.typography.bodyMedium
                                     )
                                     Text(

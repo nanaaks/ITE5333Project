@@ -50,7 +50,9 @@ fun ResultScreen(navHostController: NavController) {
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.headlineSmall
             )
+
             Spacer(modifier = Modifier.height(20.dp))
+
             Button(
                 onClick = { navHostController.popBackStack() },
                 colors = ButtonDefaults.buttonColors(

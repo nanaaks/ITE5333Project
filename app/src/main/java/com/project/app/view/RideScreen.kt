@@ -77,6 +77,7 @@ fun RideScreen(
     var price by remember { mutableStateOf(0.00) }
 
     var showAddAddressDialog by remember { mutableStateOf(false) }
+    var showInfoDialog by remember { mutableStateOf(false) }
     var street by remember { mutableStateOf("") }
     var city by remember { mutableStateOf("") }
 
@@ -235,29 +236,6 @@ fun RideScreen(
                         if (rideVM.pickup.value != null && rideVM.destination.value != null) {
                             rideVM.bookRide(userName= userName)
                             driveVM.refreshJobs()
-                            // TODO - Use AlertDialog to display confirmation instead of separate screen
-                            /*
-                            val newRide = Ride(
-                                startAddress = rideViewModel.pickup.value,
-                                endAddress = rideViewModel.destination.value,
-                                price = rideViewModel.fare.value,
-                                dateTime = LocalDateTime.now(),
-                                status = "Pending",
-                                id = id
-                            )
-                            val newRide = Ride(
-                                originStreet = originStreet,
-                                originCity = originCity,
-                                destStreet = destStreet,
-                                destCity = destCity,
-                                price = price.toFloatOrNull() ?: 0f,
-                                dateTime = dateTime,
-                                status = status
-                            )
-                            rideVM.insertRide(newRide)
-
-                            navController.popBackStack()
-                             */
                             rideVM.insertRide(
                                 Ride(
                                     originStreet = originStreet,
@@ -270,7 +248,7 @@ fun RideScreen(
                                     id = userId
                                     )
                             )
-                            navController.navigate(Routes.Result.routeName)
+                            showInfoDialog = true
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
@@ -282,6 +260,39 @@ fun RideScreen(
                 }
             }
         }
+    }
+
+    if (showInfoDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showInfoDialog = false
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    showInfoDialog = false
+                }) {
+                    Text("Okay")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    showInfoDialog = false
+                }) {
+                    Text("Dismiss")
+                }
+            },
+            title = {Text("Booking Confirmed",
+                style = MaterialTheme.typography.headlineMedium
+            )},
+            text = {
+                Column {
+                    Text("Pickup Address : ${originStreet}, ${originCity}")
+                    Text("Destination Address : ${destStreet}, ${destCity}")
+                    Text("Price : $${"%.2f".format(rideVM.fare.value)}")
+                    Text("ETA: ${rideVM.eta.value}")
+                }
+            }
+        )
     }
 
     /** ADD NEW ADDRESS DIALOG **/
